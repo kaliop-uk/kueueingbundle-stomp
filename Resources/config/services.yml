@@ -1,0 +1,29 @@
+parameters:
+    kaliop_queueing.driver.stomp.class: Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp\Driver
+    kaliop_queueing.stomp.queue_manager.class: Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp\QueueManager
+    kaliop_queueing.stomp.producer.class: Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp\Producer
+    kaliop_queueing.stomp.consumer.class: Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp\Consumer
+
+services:
+    kaliop_queueing.driver.stomp:
+        class: %kaliop_queueing.driver.stomp.class%
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        tags:
+            - { name: kaliop_queueing.driver, alias: stomp }
+
+    kaliop_queueing.stomp.queue_manager:
+        class: %kaliop_queueing.stomp.queue_manager.class%
+        #parent: kaliop_queueing.message_producer
+        calls:
+            - [ setContainer, [ @service_container ] ]
+
+    #kaliop_queueing.stomp.producer:
+    #    class: %kaliop_queueing.stomp.producer.class%
+    #    arguments: [ %kaliop_queueing_sqs.default.client_config% ]
+
+    #kaliop_queueing.stomp.consumer:
+    #    class: %kaliop_queueing.stomp.consumer.class%
+    #    arguments: [ %kaliop_queueing_sqs.default.client_config% ]
+    #    calls:
+    #        - [ setRequestBatchSize, [ %kaliop_queueing_sqs.default.request_batch_size% ] ]

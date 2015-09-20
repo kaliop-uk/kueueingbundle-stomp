@@ -1,0 +1,25 @@
+
+kaliop_queueing_plugins_stomp:
+
+    connections:
+        default:
+            connect_string: ""
+            credentials:
+                login: ""
+                passcode: ""
+
+
+    queues:
+        # name as used by console commands
+        console_command_queue:
+            connection: default
+            queue_options:
+                # name of the queue on the Stomp server
+                name: https://sqs.us-east-1.amazonaws.com/139046234059/ConsoleCommandQueue
+                # Routing keys available on this queue are the command to be executed, with doublecolon replaced by dots
+                # A hash sign is a widlcard, while a star matches one word only
+                # Ex: kaliop.# matches all commands starting with 'kaliop:'
+                # NB take extra care about securing your environment when you allow execution of commands sent from remote hosts
+                routing_keys: [ '#' ]
+            # the name of the callback is fixed
+            callback: kaliop_queueing.message_consumer.console_command

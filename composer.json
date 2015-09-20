@@ -1,0 +1,16 @@
+{
+    "name": "kaliop/queueingbundle-stomp",
+    "description": "Kaliop Queueing Bundle - Stomp plugin",
+    "license": "GPL-2.0",
+    "autoload": {
+        "psr-4": { "Kaliop\\Queueing\\Plugins\\StompBundle\\": "" }
+    },
+    "require": {
+        "kaliop/queueingbundle": "~0.2",
+        "fusesource/stomp-php": "~2.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "codeclimate/php-test-reporter": "~0.2"
+    }
+}
