@@ -12,9 +12,9 @@ class Producer extends Stomp implements ProducerInterface
     protected $contentType = 'text/plain';
 
     /**
-     * Enabled debug. At the moment can not disable it
+     * At the moment does nothing
      *
-     * @param $debug
+     * @param bool $debug
      * @return $this
      *
      * @todo
@@ -42,30 +42,16 @@ class Producer extends Stomp implements ProducerInterface
      */
     public function publish($msgBody, $routingKey = '', $additionalProperties = array())
     {
-        if (!$this->connected) {
-            $this->connect();
-        }
-        $this->client->send(
+        $this->connect();
+        if (! $this->client->send(
             $this->getFullQueueName($routingKey),
             $msgBody,
-            $this->getClientProperties($additionalProperties)
-        );
-    }
-
-    /**
-     * Returns the full queue name to be used in stomp messages.
-     * Apache Apollo supports using routing keys at end of queue name @see https://activemq.apache.org/apollo/documentation/stomp-manual.html
-     * RabbitMQ... @see https://www.rabbitmq.com/stomp.html
-     * @param string $routingKey
-     * @return string;
-     */
-    protected function getFullQueueName($routingKey = '')
-    {
-        $queueName = $this->queueName;
-        if ($routingKey != '') {
-            $queueName = rtrim($queueName, '/') . '/' . ltrim($routingKey, '/');
+            $this->getClientProperties($additionalProperties),
+            // at least when talking to Apollo we need this flag on or no exception will be thrown on errors
+            true
+        ) ) {
+            throw new \RuntimeException('Message not delivered to Stomp broker');
         }
-        return $queueName;
     }
 
     /**
@@ -83,7 +69,7 @@ class Producer extends Stomp implements ProducerInterface
     /**
      * @param array $messages
      */
-      public function batchPublish(array $messages)
+        public function batchPublish(array $messages)
     {
         $j = 0;
         for ($i = 0; $i < count($messages); $i += 10) {
@@ -110,18 +96,6 @@ class Producer extends Stomp implements ProducerInterface
                 throw new \RuntimeException("Batch sending of messages failed - $ok ok out of $tot");
             }
         }
-    }
-
-    /**
-     * Allows callers to do whatever they want with the client - useful to the Queue Mgr
-     *
-     * @param string $method
-     * @param array $args
-     * @return mixed
-     */
-      public function call($method, array $args = array())
-    {
-        return $this->client->$method(array_merge($args, $this->getClientParams()));
     }
 
     /**

@@ -49,6 +49,23 @@ class Stomp
     }
 
     /**
+     * Returns the full queue name to be used in stomp messages.
+     * Apache Apollo supports using routing keys at end of queue name @see https://activemq.apache.org/apollo/documentation/stomp-manual.html
+     * RabbitMQ... @see https://www.rabbitmq.com/stomp.html
+     * @param string $routingKey
+     * @return string;
+     */
+    protected function getFullQueueName($routingKey = '')
+    {
+        $queueName = $this->queueName;
+        if ($routingKey != '') {
+            $routingKey = str_replace('#', '**', $routingKey);
+            $queueName = rtrim($queueName, '.') . '.' . ltrim($routingKey, '.');
+        }
+        return $queueName;
+    }
+
+    /**
      * Connects to the Stomp server. Attempts the connection only once by default, regardless of results
      *
      * @param bool $onlyOnce
