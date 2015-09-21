@@ -50,7 +50,7 @@ See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle res
 
 ## Notes
 
-* SQS does *not* natively support routing-keys the way that RabbitMQ does.
+* Stomp does *not* natively support routing-keys the way that RabbitMQ does.
     This bundle *does* add back support for routing-keys, but the way those are handled differs with each broker.
 
 

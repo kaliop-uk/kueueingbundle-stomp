@@ -3,10 +3,10 @@ kaliop_queueing_plugins_stomp:
 
     connections:
         default:
-            connect_string: ""
+            connect_string: "tcp://localhost:61613""
             credentials:
-                login: ""
-                passcode: ""
+                login: "admin"
+                passcode: "password"
 
 
     queues:
@@ -15,7 +15,7 @@ kaliop_queueing_plugins_stomp:
             connection: default
             queue_options:
                 # name of the queue on the Stomp server
-                name: https://sqs.us-east-1.amazonaws.com/139046234059/ConsoleCommandQueue
+                name: /topic/console_command
                 # Routing keys available on this queue are the command to be executed, with doublecolon replaced by dots
                 # A hash sign is a widlcard, while a star matches one word only
                 # Ex: kaliop.# matches all commands starting with 'kaliop:'

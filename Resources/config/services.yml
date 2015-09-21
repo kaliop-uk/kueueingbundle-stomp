@@ -20,10 +20,8 @@ services:
 
     #kaliop_queueing.stomp.producer:
     #    class: %kaliop_queueing.stomp.producer.class%
-    #    arguments: [ %kaliop_queueing_sqs.default.client_config% ]
+    #    arguments: [ %kaliop_queueing_stomp.default.client_config% ]
 
     #kaliop_queueing.stomp.consumer:
     #    class: %kaliop_queueing.stomp.consumer.class%
-    #    arguments: [ %kaliop_queueing_sqs.default.client_config% ]
-    #    calls:
-    #        - [ setRequestBatchSize, [ %kaliop_queueing_sqs.default.request_batch_size% ] ]
+    #    arguments: [ %kaliop_queueing_stomp.default.client_config% ]
