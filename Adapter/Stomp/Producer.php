@@ -19,7 +19,8 @@ class Producer extends Stomp implements ProducerInterface
      *
      * @todo
      */
-      public function setDebug($debug) {
+    public function setDebug($debug)
+    {
         /*if ($debug == $this->debug) {
             return $this;
         }

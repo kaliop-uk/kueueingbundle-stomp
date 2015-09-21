@@ -7,14 +7,15 @@ use Kaliop\QueueingBundle\Queue\MessageInterface;
 class Message implements MessageInterface
 {
     protected $body;
-    protected $properties = array();
+    protected $headers = array();
     protected $contentType;
 
-    public function __construct($body, array $properties = array(), $contentType='application/json')
+    public function __construct($body, array $headers = array())
     {
         $this->body = $body;
-        $this->properties = $properties;
-        $this->contentType = $contentType;
+        $this->headers = $headers;
+        /// @todo throw exception if content type not set
+        $this->contentType = $headers['content-type'];
     }
 
     public function getBody()
@@ -38,7 +39,7 @@ class Message implements MessageInterface
      */
     public function has($name)
     {
-        return isset($this->properties[$name]);
+        return isset($this->headers[$name]);
     }
 
     /**
@@ -48,7 +49,7 @@ class Message implements MessageInterface
      */
     public function get($name)
     {
-        return $this->properties[$name];
+        return $this->headers[$name];
     }
 
     /**
@@ -57,6 +58,6 @@ class Message implements MessageInterface
      */
     public function getProperties()
     {
-        return $this->properties;
+        return $this->headers;
     }
 }
