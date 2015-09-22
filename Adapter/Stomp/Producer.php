@@ -6,8 +6,6 @@ use Kaliop\QueueingBundle\Queue\ProducerInterface;
 
 class Producer extends Stomp implements ProducerInterface
 {
-
-    //protected $queuePrefix = 'topic';
     protected $debug = false;
     protected $contentType = 'text/plain';
 
@@ -33,6 +31,18 @@ class Producer extends Stomp implements ProducerInterface
     }
 
     /**
+     * @param string $contentType
+     * @return Producer
+     * @throws \Exception if unsupported contentType is used
+     */
+    public function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
+
+        return $this;
+    }
+
+    /**
      * Publishes the message
      *
      * @param string $msgBody
@@ -50,8 +60,28 @@ class Producer extends Stomp implements ProducerInterface
             $this->getClientProperties($additionalProperties),
             // at least when talking to Apollo we need this flag on or no exception will be thrown on errors
             true
-        ) ) {
+        )) {
             throw new \RuntimeException('Message not delivered to Stomp broker');
+        }
+    }
+
+    /**
+     * @param array $messages
+     */
+    public function batchPublish(array $messages)
+    {
+        $this->connect();
+
+        foreach($messages as $message) {
+            if (! $this->client->send(
+                $this->getFullQueueName(@$message['routingKey']),
+                $message['msgBody'],
+                $this->getClientProperties(@$message['additionalProperties']),
+                // at least when talking to Apollo we need this flag on or no exception will be thrown on errors
+                true
+            )) {
+                throw new \RuntimeException('Message not delivered to Stomp broker');
+            }
         }
     }
 
@@ -67,47 +97,4 @@ class Producer extends Stomp implements ProducerInterface
         return $result;
     }
 
-    /**
-     * @param array $messages
-     */
-        public function batchPublish(array $messages)
-    {
-        $j = 0;
-        for ($i = 0; $i < count($messages); $i += 10) {
-            $entries = array();
-            $toSend = array_slice($messages, $i, 10);
-            foreach($toSend as $message) {
-                $entries[] = array_merge(
-                    array(
-                        'MessageBody' => $message['msgBody'],
-                        'Id' => $j++
-                    ),
-                    $this->getClientParams(@$message['routingKey'], @$message['additionalProperties'])
-                );
-            }
-
-            $result = $this->client->sendMessageBatch(
-                array(
-                    'QueueUrl' => $this->queueUrl,
-                    'Entries' => $entries,
-                )
-            );
-
-            if (($ok = count($result->get('Successful'))) != ($tot = count($toSend))) {
-                throw new \RuntimeException("Batch sending of messages failed - $ok ok out of $tot");
-            }
-        }
-    }
-
-    /**
-     * @param string $contentType
-     * @return Producer
-     * @throws \Exception if unsupported contentType is used
-     */
-    public function setContentType($contentType)
-    {
-        $this->contentType = $contentType;
-
-        return $this;
-    }
 }
