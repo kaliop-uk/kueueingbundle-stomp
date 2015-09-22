@@ -21,17 +21,6 @@ class Consumer extends Stomp implements ConsumerInterface
     }
 
     /**
-     * At the moment does nothing
-     * @param bool
-     * @return Consumer
-     * @todo
-     */
-    public function setDebug($debug)
-    {
-        return $this;
-    }
-
-    /**
      * Does nothing
      * @param int $limit
      * @return Consumer
@@ -39,6 +28,11 @@ class Consumer extends Stomp implements ConsumerInterface
     public function setMemoryLimit($limit)
     {
         return $this;
+    }
+
+    public function setSubscriptionName($name)
+    {
+        $this->client->clientId = $name;
     }
 
     /**
@@ -81,8 +75,13 @@ class Consumer extends Stomp implements ConsumerInterface
 
         $this->connect();
 
+        $this->client->clientId = 'hello';
         /// @todo shall we subscribe only once? (and reset the flag if changing routing key / queue name)
-        $this->client->subscribe($this->getFullQueueName($this->routingKey), array(), true);
+        $this->client->subscribe(
+            $this->getFullQueueName($this->routingKey),
+            $this->getClientProperties(array(), 'SUBSCRIBE'),
+            true
+        );
 
         while(true) {
             if ($timeout > 0) {
@@ -118,4 +117,19 @@ class Consumer extends Stomp implements ConsumerInterface
 
         }
     }
+
+    protected function getClientProperties(array $additionalProperties = array(), $command='')
+    {
+        $result = $additionalProperties;
+
+        switch($command)
+        {
+            case 'SUBSCRIBE';
+                $result = array_merge(array('persistent' => 'true'), $result);
+                break;
+        }
+
+        return $result;
+    }
+
 }

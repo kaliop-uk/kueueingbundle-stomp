@@ -15,7 +15,8 @@ class Configuration implements ConfigurationInterface
         $rootNode = $tree->root('kaliop_queueing_plugins_stomp');
 
         $this->addConnections($rootNode);
-        $this->addQueues($rootNode);
+        $this->addProducers($rootNode);
+        $this->addConsumers($rootNode);
 
         return $tree;
     }
@@ -32,7 +33,7 @@ class Configuration implements ConfigurationInterface
                         ->children()
                             ->scalarNode('connect_string')->isRequired()->end()
                             ->variableNode('credentials')
-                                /// @todo: validate presence of login, passcode
+                                /// @todo: validate presence of user, password
                                 //->children()
                                 //->whatever...
                                 //->end()
@@ -50,16 +51,37 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    protected function addQueues(ArrayNodeDefinition $node)
+    protected function addProducers(ArrayNodeDefinition $node)
     {
         $node
-            ->fixXmlConfig('consumer')
+            ->fixXmlConfig('producer')
             ->children()
-                ->arrayNode('queues')
+                ->arrayNode('producers')
                     ->canBeUnset()
                     ->useAttributeAsKey('key')
                     ->prototype('array')
                         ->append($this->getQueueConfiguration())
+                        ->children()
+                            ->scalarNode('connection')->defaultValue('default')->end()
+                            //->scalarNode('auto_setup_fabric')->defaultTrue()->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
+
+    protected function addConsumers(ArrayNodeDefinition $node)
+    {
+        $node
+            ->fixXmlConfig('consumer')
+            ->children()
+                ->arrayNode('consumers')
+                    ->canBeUnset()
+                    ->useAttributeAsKey('key')
+                    ->prototype('array')
+                        ->append($this->getQueueConfiguration())
+                        ->append($this->getSubscriptionConfiguration())
                         ->children()
                             ->scalarNode('connection')->defaultValue('default')->end()
                             ->scalarNode('callback')->isRequired()->end() // Q: could it be made optional?
@@ -75,7 +97,18 @@ class Configuration implements ConfigurationInterface
     {
         $node = new ArrayNodeDefinition('queue_options');
 
-        $this->addQueueNodeConfiguration($node);
+        return $node
+            ->children()
+                ->scalarNode('name')->isRequired()->end()
+            ->end()
+        ;
+    }
+
+    protected function getSubscriptionConfiguration()
+    {
+        $node = new ArrayNodeDefinition('subscription_options');
+
+        $this->addSubscriptionNodeConfiguration($node);
 
         return $node;
     }
@@ -84,11 +117,11 @@ class Configuration implements ConfigurationInterface
      * @todo we use an array for routing keys, as RabbitMQ config does, but we probably only support one
      * @param ArrayNodeDefinition $node
      */
-    protected function addQueueNodeConfiguration(ArrayNodeDefinition $node)
+    protected function addSubscriptionNodeConfiguration(ArrayNodeDefinition $node)
     {
         $node
             ->children()
-                ->scalarNode('name')->end()
+                ->scalarNode('name')->isRequired()->end()
                 ->arrayNode('routing_keys')
                     ->prototype('scalar')->end()
                     ->defaultValue(array())

@@ -2,8 +2,7 @@
 
 namespace Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp;
 
-use FuseSource\Stomp\Stomp as Client;
-
+/// @todo find a better name for this class
 class Stomp
 {
     protected $client;
@@ -37,6 +36,17 @@ class Stomp
     {
         $this->username = $username;
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @param bool
+     * @return Consumer
+     */
+    public function setDebug($debug)
+    {
+        $this->client->debug = $debug;
 
         return $this;
     }

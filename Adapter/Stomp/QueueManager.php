@@ -16,7 +16,8 @@ class QueueManager implements ContainerAwareInterface, QueueManagerInterface
 {
     protected $queueName;
     protected $container;
-    protected $registeredQueues = array();
+    protected $registeredProducers = array();
+    protected $registeredConsumers = array();
 
     public function setContainer(ContainerInterface $container = null)
     {
@@ -49,16 +50,33 @@ class QueueManager implements ContainerAwareInterface, QueueManagerInterface
         }
     }
 
-    protected function listConfiguredQueues()
+    protected function listConfiguredQueues($type = Queue::TYPE_ANY)
     {
-        if (count($this->registeredQueues) == 0) {
-            return array();
+        $out = array();
+        if ($type = Queue::TYPE_PRODUCER || $type = Queue::TYPE_ANY) {
+            foreach ($this->registeredProducers as $queueName) {
+                $out[$queueName] = Queue::TYPE_PRODUCER;
+            }
         }
-        return array_combine($this->registeredQueues, array_fill(0, count($this->registeredQueues), Queue::TYPE_ANY));
+        if ($type = Queue::TYPE_CONSUMER || $type = Queue::TYPE_ANY) {
+            foreach ($this->registeredConsumers as $queueName) {
+                $out[$queueName] = Queue::TYPE_CONSUMER;
+            }
+        }
+        return $out;
     }
 
-    public function registerQueue($queueName)
-    {
-        $this->registeredQueues[]=$queueName;
+    /**
+     * Used to keep track of the queues which are available (configured in the bundle)
+     */
+    public function registerProducer($queueName) {
+        $this->registeredProducers[] = $queueName;
+    }
+
+    /**
+     * Used to keep track of the queues which are available (configured in the bundle)
+     */
+    public function registerConsumer($queueName) {
+        $this->registeredConsumers[] = $queueName;
     }
 }

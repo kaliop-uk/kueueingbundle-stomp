@@ -10,27 +10,6 @@ class Producer extends Stomp implements ProducerInterface
     protected $contentType = 'text/plain';
 
     /**
-     * At the moment does nothing
-     *
-     * @param bool $debug
-     * @return $this
-     *
-     * @todo
-     */
-    public function setDebug($debug)
-    {
-        /*if ($debug == $this->debug) {
-            return $this;
-        }
-        if ($debug) {
-            $handlerList = $this->client->getHandlerList();
-            $handlerList->interpose(new TraceMiddleware($debug === true ? [] : $debug));
-        }*/
-
-        return $this;
-    }
-
-    /**
      * @param string $contentType
      * @return Producer
      * @throws \Exception if unsupported contentType is used

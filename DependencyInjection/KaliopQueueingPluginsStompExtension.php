@@ -35,7 +35,8 @@ class KaliopQueueingPluginsStompExtension extends Extension
         $this->config = $this->processConfiguration($configuration, $configs);
 
         $this->loadConnections();
-        $this->loadQueues();
+        $this->loadProducers();
+        $this->loadConsumers();
     }
 
     protected function loadConnections()
@@ -47,36 +48,60 @@ class KaliopQueueingPluginsStompExtension extends Extension
         }
     }
 
-    protected function loadQueues()
+    protected function loadProducers()
     {
         $qmDefinition = null;
         if ($this->container->hasDefinition($this->queueManagerService)) {
             $qmDefinition = $this->container->findDefinition($this->queueManagerService);
         }
 
-        foreach ($this->config['queues'] as $key => $consumer) {
-            if (!isset($this->config['connections'][$consumer['connection']])) {
-                throw new \RuntimeException("Stomp queue '$key' can not use connection '{$consumer['connection']}' because it is not defined in the connections section");
+        foreach ($this->config['producers'] as $key => $producer) {
+            if (!isset($this->config['connections'][$producer['connection']])) {
+                throw new \RuntimeException("Stomp producer '$key' can not use connection '{$producer['connection']}' because it is not defined in the connections section");
             }
 
-            $connectionDefinition = $this->config['connections'][$consumer['connection']];
+            $connectionDefinition = $this->config['connections'][$producer['connection']];
 
             $pDefinition = new Definition('%kaliop_queueing.stomp.producer.class%', array($connectionDefinition));
             $pDefinition
-                //->addMethodCall('setCredentials', array($connectionDefinition['credentials']['user'], $connectionDefinition['credentials']['password']))
-                ->addMethodCall('setQueueName', array($consumer['queue_options']['name']))
+                ->addMethodCall('setQueueName', array($producer['queue_options']['name']))
             ;
             $name = sprintf('kaliop_queueing.stomp.%s_producer', $key);
             $this->container->setDefinition($name, $pDefinition);
 
+
+            //if (!$producer['auto_setup_fabric']) {
+            //    $definition->addMethodCall('disableAutoSetupFabric');
+            //}
+
+            if ($qmDefinition) {
+                $qmDefinition->addMethodCall('registerProducer', array($key));
+            }
+        }
+    }
+
+    protected function loadConsumers()
+    {
+        $qmDefinition = null;
+        if ($this->container->hasDefinition($this->queueManagerService)) {
+            $qmDefinition = $this->container->findDefinition($this->queueManagerService);
+        }
+
+        foreach ($this->config['consumers'] as $key => $consumer) {
+            if (!isset($this->config['connections'][$consumer['connection']])) {
+                throw new \RuntimeException("Stomp consumer '$key' can not use connection '{$consumer['connection']}' because it is not defined in the connections section");
+            }
+
+            $connectionDefinition = $this->config['connections'][$consumer['connection']];
+
             $cDefinition = new Definition('%kaliop_queueing.stomp.consumer.class%', array($connectionDefinition));
             $cDefinition
-                //->addMethodCall('setCredentials', array($connectionDefinition['credentials']['user'], $connectionDefinition['credentials']['password']))
+                ->addMethodCall('setSubscriptionName', array($consumer['subscription_options']['name']))
                 ->addMethodCall('setQueueName', array($consumer['queue_options']['name']))
                 ->addMethodCall('setCallback', array(new Reference($consumer['callback'])));
             ;
-            if (count($consumer['queue_options']['routing_keys'])) {
-                $cDefinition->addMethodCall('setRoutingKey', array(reset($consumer['queue_options']['routing_keys'])));
+            if (count($consumer['subscription_options']['routing_keys'])) {
+                $cDefinition->addMethodCall('setRoutingKey', array(reset($consumer['subscription_options']['routing_keys'])));
             }
             $name = sprintf('kaliop_queueing.stomp.%s_consumer', $key);
             $this->container->setDefinition($name, $cDefinition);
@@ -86,7 +111,7 @@ class KaliopQueueingPluginsStompExtension extends Extension
             //}
 
             if ($qmDefinition) {
-                $qmDefinition->addMethodCall('registerQueue', array($key));
+                $qmDefinition->addMethodCall('registerConsumer', array($key));
             }
         }
     }
