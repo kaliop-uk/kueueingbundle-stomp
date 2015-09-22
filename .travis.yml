@@ -5,17 +5,17 @@ sudo: true
 
 php:
   - 5.3
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
+#  - 5.4
+#  - 5.5
+#  - 5.6
+#  - 7.0
+#  - hhvm
 
 env:
   # Test only on versions of Sf that are still supported
   - SYMFONY_VERSION=2.3.*
-  - SYMFONY_VERSION=2.6.*
-  - SYMFONY_VERSION=2.7.*
+#  - SYMFONY_VERSION=2.6.*
+#  - SYMFONY_VERSION=2.7.*
 
   - BROKER=apollo
   #- BROKER=rabbitmq
