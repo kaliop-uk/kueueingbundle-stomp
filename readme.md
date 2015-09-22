@@ -5,7 +5,9 @@ Adds support for the STOMP protocol to the Kaliop Queueing Bundle
 STOMP is a protocol used by multiple messaging brokers, such as ActiveMQ, Apache Apollo and RabbitMQ (but we suggest you
 use AMQP to communicate with RabbitMQ, which is supported natively by the Queueing Bundle) 
 
-See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle respectively for details.
+Currently the bundle is tested using Apache Apollo.
+
+See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle respectively for more details.
 
 
 ## Installation
