@@ -90,28 +90,32 @@ class Consumer extends Stomp implements ConsumerInterface
             }
 
             $message = $this->client->readFrame();
-            switch($message->command)
-            {
-                case 'MESSAGE':
-                    $this->client->ack($message);
-                    $this->callback->receive(new Message($message->body, $message->headers));
 
-                    $toConsume--;
-                    if ($toConsume == 0) {
-                        return;
-                    }
-                    break;
+            if ($message !== false) {
+                switch($message->command)
+                {
+                    case 'MESSAGE':
+                        $this->client->ack($message);
+                        $this->callback->receive(new Message($message->body, $message->headers));
 
-                case 'ERROR':
-                    throw new \RuntimeException("Stomp server sent error frame: ".$message->body);
+                        $toConsume--;
+                        if ($toConsume == 0) {
+                            return;
+                        }
+                        break;
 
-                case 'RECEIPT':
-                    // do nothing
+                    case 'ERROR':
+                        throw new \RuntimeException("Stomp server sent error frame: ".$message->body);
+
+                    case 'RECEIPT':
+                        // do nothing
+                }
             }
 
             if ($timeout > 0 && ($remaining = ($startTime + $timeout - time())) <= 0) {
                 return;
             }
+
         }
     }
 }

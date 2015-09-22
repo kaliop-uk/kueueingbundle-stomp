@@ -61,17 +61,17 @@ class KaliopQueueingPluginsStompExtension extends Extension
 
             $connectionDefinition = $this->config['connections'][$consumer['connection']];
 
-            $pDefinition = new Definition('%kaliop_queueing.stomp.producer.class%', array($connectionDefinition['connect_string']));
+            $pDefinition = new Definition('%kaliop_queueing.stomp.producer.class%', array($connectionDefinition));
             $pDefinition
-                ->addMethodCall('setCredentials', array($connectionDefinition['credentials']['user'], $connectionDefinition['credentials']['password']))
+                //->addMethodCall('setCredentials', array($connectionDefinition['credentials']['user'], $connectionDefinition['credentials']['password']))
                 ->addMethodCall('setQueueName', array($consumer['queue_options']['name']))
             ;
             $name = sprintf('kaliop_queueing.stomp.%s_producer', $key);
             $this->container->setDefinition($name, $pDefinition);
 
-            $cDefinition = new Definition('%kaliop_queueing.stomp.consumer.class%', array($this->config['connections'][$consumer['connection']]['connect_string']));
+            $cDefinition = new Definition('%kaliop_queueing.stomp.consumer.class%', array($connectionDefinition));
             $cDefinition
-                ->addMethodCall('setCredentials', array($connectionDefinition['credentials']['user'], $connectionDefinition['credentials']['password']))
+                //->addMethodCall('setCredentials', array($connectionDefinition['credentials']['user'], $connectionDefinition['credentials']['password']))
                 ->addMethodCall('setQueueName', array($consumer['queue_options']['name']))
                 ->addMethodCall('setCallback', array(new Reference($consumer['callback'])));
             ;

@@ -13,11 +13,24 @@ class Stomp
     protected $connected = false;
 
     /**
-     * @param string $connectString
+     * @param array $connectionConfig keys:
+     *                                - connect_string
+     *                                - credentials (optional, must be an array with 'user' and 'password'
      */
-    public function __construct($connectString)
+    public function __construct(array $connectionConfig)
     {
+        $connectString = $connectionConfig['connect_string'];
         $this->client = new Client($connectString);
+        if (isset($connectionConfig['credentials'])) {
+            $this->setCredentials($connectionConfig['credentials']['user'], $connectionConfig['credentials']['password']);
+        }
+    }
+
+    public function __destruct()
+    {
+        if ($this->connected) {
+            $this->client->disconnect();
+        }
     }
 
     public function setCredentials($username, $password)
