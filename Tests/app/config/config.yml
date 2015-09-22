@@ -1,0 +1,22 @@
+# Configuration file used for running tests
+
+framework:
+    secret: "ThisIsNotSoSercretSoWeTestIt"
+
+kaliop_queueing_plugins_stomp:
+    connections:
+        default:
+            connect_string: "tcp://localhost:61613"
+            credentials:
+                user: "admin"
+                password: "password"
+
+    queues:
+
+
+services:
+    # enable the accumulator listener
+    kaliop_queueing.message_consumer.filter.accumulator:
+        class: %kaliop_queueing.message_consumer.filter.accumulator.class%
+        tags:
+             - { name: kaliop_queueing.event_listener, event: kaliop_queueing.message_consumed }
