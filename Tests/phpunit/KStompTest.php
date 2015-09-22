@@ -32,9 +32,13 @@ abstract class KStompTest extends WebTestCase
         return $this->getDriver()->getQueueManager($queueName);
     }*/
 
-    protected function getConsumer($queueName)
+    protected function getConsumer($queueName, $callback='')
     {
-        return $this->getDriver()->getConsumer($queueName);
+        $consumer = $this->getDriver()->getConsumer($queueName);
+        if ($callback != '') {
+            $consumer->setCallback($this->getContainer()->get($callback));
+        }
+        return $consumer;
     }
 
     protected function getMsgProducer($queueName, $msgProducerServiceId)
@@ -72,7 +76,7 @@ abstract class KStompTest extends WebTestCase
 
         $queueUrl = '/topic/'.$queueName;
         $driver->createProducer($queueName, $queueUrl, 'default');
-        $driver->createConsumer($queueName, $queueUrl, 'default');
+        $driver->createConsumer($queueName, $queueUrl, 'default', 'default_subscription');
 
         // save the id of the created queue
         $this->createdQueues[$queueName] = time();

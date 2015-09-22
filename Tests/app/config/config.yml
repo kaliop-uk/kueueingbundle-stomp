@@ -11,8 +11,9 @@ kaliop_queueing_plugins_stomp:
                 user: "admin"
                 password: "password"
 
-    queues:
+    producers:
 
+    consumers:
 
 services:
     # enable the accumulator listener

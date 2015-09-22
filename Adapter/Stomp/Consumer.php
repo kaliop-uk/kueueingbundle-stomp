@@ -11,7 +11,7 @@ class Consumer extends Stomp implements ConsumerInterface
     protected $callback;
     protected $routingKey;
     protected $logger;
-    protected $debug = false;
+    protected $subscribed = false;
 
     public function setLogger(LoggerInterface $logger = null)
     {
@@ -30,9 +30,16 @@ class Consumer extends Stomp implements ConsumerInterface
         return $this;
     }
 
+    /**
+     * @param string $name
+     * @return Consumer
+     */
     public function setSubscriptionName($name)
     {
         $this->client->clientId = $name;
+        $this->subscribed = false;
+
+        return $this;
     }
 
     /**
@@ -42,6 +49,7 @@ class Consumer extends Stomp implements ConsumerInterface
     public function setRoutingKey($key)
     {
         $this->routingKey = (string)$key;
+        $this->subscribed = false;
 
         return $this;
     }
@@ -75,13 +83,7 @@ class Consumer extends Stomp implements ConsumerInterface
 
         $this->connect();
 
-        $this->client->clientId = 'hello';
-        /// @todo shall we subscribe only once? (and reset the flag if changing routing key / queue name)
-        $this->client->subscribe(
-            $this->getFullQueueName($this->routingKey),
-            $this->getClientProperties(array(), 'SUBSCRIBE'),
-            true
-        );
+        $this->subscribe();
 
         while(true) {
             if ($timeout > 0) {
@@ -130,6 +132,20 @@ class Consumer extends Stomp implements ConsumerInterface
         }
 
         return $result;
+    }
+
+    protected function subscribe()
+    {
+        if (!$this->subscribed) {
+
+            $this->client->subscribe(
+                $this->getFullQueueName($this->routingKey),
+                $this->getClientProperties(array(), 'SUBSCRIBE'),
+                true
+            );
+
+            $this->subscribed = true;
+        }
     }
 
 }
