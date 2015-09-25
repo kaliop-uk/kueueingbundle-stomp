@@ -43,6 +43,9 @@ class Consumer extends Stomp implements ConsumerInterface
     }
 
     /**
+     * NB: when changing this, you should change the subscription name as well, otherwise you will get an error for
+     * trying to create a double subscription
+     *
      * @param string $key
      * @return Consumer
      */

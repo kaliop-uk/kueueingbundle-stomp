@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 abstract class KStompTest extends WebTestCase
 {
     static protected $queueCounter = 1;
-    protected $createdQueues = array();
+    //protected $createdQueues = array();
 
     protected function setUp()
     {
@@ -56,7 +56,7 @@ abstract class KStompTest extends WebTestCase
      */
     protected function removeQueue($queueName)
     {
-        unset($this->createdQueues[$queueName]);
+        //unset($this->createdQueues[$queueName]);
         /*return static::$kernel->
         getContainer()->
         get('kaliop_queueing.drivermanager')->
@@ -69,19 +69,45 @@ abstract class KStompTest extends WebTestCase
      * Does nothing but generate a unique queue name, since queues are auto-created by the broker on demand
      * @return string
      */
-    protected function createQueue()
+    protected function createQueue($withConsumer = true)
     {
         $queueName = $this->getNewQueueName();
         $driver = $this->getDriver();
 
         $queueUrl = '/topic/'.$queueName;
         $driver->createProducer($queueName, $queueUrl, 'default');
-        $driver->createConsumer($queueName, $queueUrl, 'default', 'default_subscription');
+        if ($withConsumer) {
+            $driver->createConsumer($queueName, $queueUrl, 'default', 'default_subscription_'.self::$queueCounter);
+        }
 
         // save the id of the created queue
-        $this->createdQueues[$queueName] = time();
+        //$this->createdQueues[$queueName] = time();
 
         return $queueName;
+    }
+
+    protected function createConsumer($queueName, $subscriptionName, $queueUrl='')
+    {
+        $driver = $this->getDriver();
+
+        if ($queueUrl == '') {
+            $queueUrl = '/topic/'.$queueName;
+        }
+        $driver->createConsumer($queueName, $queueUrl, 'default', $subscriptionName);
+
+        // save the id of the created queue
+        //$this->createdQueues[$queueName] = time();
+
+        return $queueName;
+    }
+
+    protected function createConsumers($queueName, $count)
+    {
+        $names = array();
+        for ($i = 1; $i <= $count; $i++) {
+            $names[] = $this->createConsumer($queueName . '_' . $i, $queueName . '_' .  $i, '/topic/' . $queueName);
+        }
+        return $names;
     }
 
     protected function getNewQueueName()
