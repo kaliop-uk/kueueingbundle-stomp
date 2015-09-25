@@ -12,8 +12,19 @@ kaliop_queueing_plugins_stomp:
                 password: "password"
 
     producers:
-
+        travis_test_p:
+            connection: default
+            queue_options:
+                name: kaliop_queueing.travis_test.queue
     consumers:
+        travis_test_c:
+            connection: default
+            queue_options:
+                name: kaliop_queueing.travis_test.queue
+            subscription_options:
+                name: kaliop_queueing.travis_test.default_subscription
+                routing_keys: [ '#' ]
+            callback: kaliop_queueing.message_consumer.noop
 
 services:
     # enable the accumulator listener

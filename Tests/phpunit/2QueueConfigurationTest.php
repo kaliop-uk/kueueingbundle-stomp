@@ -2,13 +2,13 @@
 
 require_once(__DIR__.'/KStompTest.php');
 
-class QueueConfigurationTests extends KStompTest
+class QueueConfigurationTest extends KStompTest
 {
     public function testListConfiguredQueues()
     {
-        /*$queueName = $this->CreateQueue();
-        $queueManager = $this->getDriver()->getQueueManager($queueName);
-        $producer = $this->getDriver()->getProducer($queueName);
-        $this->assertArrayHasKey($producer->getQueueUrl(), $queueManager->executeAction('list-available'));*/
+        $queueManager = $this->getDriver()->getQueueManager(null);
+        $queues = $queueManager->executeAction('list-configured');
+        $this->assertArrayHasKey('travis_test_p', $queues);
+        $this->assertArrayHasKey('travis_test_c', $queues);
     }
 }
