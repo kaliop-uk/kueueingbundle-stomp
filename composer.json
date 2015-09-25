@@ -10,6 +10,7 @@
         "fusesource/stomp-php": "~2.1"
     },
     "require-dev": {
+        "symfony/symfony": "~2.3",
         "phpunit/phpunit": "~4.0",
         "codeclimate/php-test-reporter": "~0.2"
     }
