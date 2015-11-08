@@ -12,6 +12,7 @@ class Consumer extends Stomp implements ConsumerInterface
     protected $routingKey;
     protected $logger;
     protected $subscribed = false;
+    protected $queueName;
 
     public function setLogger(LoggerInterface $logger = null)
     {
@@ -23,7 +24,7 @@ class Consumer extends Stomp implements ConsumerInterface
     /**
      * Does nothing
      * @param int $limit
-     * @return Consumer
+     * @return $this
      */
     public function setMemoryLimit($limit)
     {
@@ -32,7 +33,7 @@ class Consumer extends Stomp implements ConsumerInterface
 
     /**
      * @param string $name
-     * @return Consumer
+     * @return $this
      */
     public function setSubscriptionName($name)
     {
@@ -47,7 +48,7 @@ class Consumer extends Stomp implements ConsumerInterface
      * trying to create a double subscription
      *
      * @param string $key
-     * @return Consumer
+     * @return $this
      */
     public function setRoutingKey($key)
     {
@@ -59,7 +60,7 @@ class Consumer extends Stomp implements ConsumerInterface
 
     /**
      * @param MessageConsumerInterface $callback
-     * @return Consumer
+     * @return $this
      */
     public function setCallback($callback)
     {
@@ -67,6 +68,17 @@ class Consumer extends Stomp implements ConsumerInterface
             throw new \RuntimeException('Can not set callback to Stomp Consumer, as it is not a MessageConsumerInterface');
         }
         $this->callback = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @param string $queueName
+     * @return $this
+     */
+    public function setQueueName($queueName)
+    {
+        $this->queueName = $queueName;
 
         return $this;
     }

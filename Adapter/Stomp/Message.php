@@ -9,13 +9,15 @@ class Message implements MessageInterface
     protected $body;
     protected $headers = array();
     protected $contentType;
+    protected $queueName;
 
-    public function __construct($body, array $headers = array())
+    public function __construct($body, array $headers = array(), $queueName = '')
     {
         $this->body = $body;
         $this->headers = $headers;
         /// @todo throw exception if content type not set
         $this->contentType = $headers['content-type'];
+        $this->queueName = $queueName;
     }
 
     public function getBody()
@@ -30,6 +32,14 @@ class Message implements MessageInterface
     public function getContentType()
     {
         return $this->contentType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueueName()
+    {
+        return $this->queueName;
     }
 
     /**

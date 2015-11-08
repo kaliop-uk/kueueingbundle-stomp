@@ -30,7 +30,7 @@ class Driver extends ContainerAware implements DriverInterface
      */
     public function getConsumer($queueName)
     {
-        return $this->container->get("kaliop_queueing.stomp.{$queueName}_consumer")->setDebug($this->debug);
+        return $this->container->get("kaliop_queueing.stomp.{$queueName}_consumer")->setDebug($this->debug)->setQueueName($queueName);
     }
 
     public function acceptMessage($message)
