@@ -5,7 +5,7 @@ Adds support for the STOMP protocol to the Kaliop Queueing Bundle
 STOMP is a protocol used by multiple messaging brokers, such as ActiveMQ, Apache Apollo and RabbitMQ (but we suggest you
 use AMQP to communicate with RabbitMQ, which is supported natively by the Queueing Bundle) 
 
-Currently the bundle is tested using Apache Apollo.
+Currently the bundle is tested using Apache Apollo and Apache ActiveMQ.
 
 See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle respectively for more details.
 
@@ -27,17 +27,19 @@ See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle res
     
     * Apollo
     
-    * ActiveMQ
+    * ActiveMQ: no need, queues and topics are created based on need
     
     * Stomp
 
-6. Set up configuration according to your AWS account
+6. Set up configuration according to your broker
 
     - copy queueingbundle_stomp_sample.yml in this bundle to your app/config folder, make sure you require it, and edit it
 
 7. check that you can list the queue:
 
-        php app/console kaliop_queueing:managequeue list -istomp
+        php app/console kaliop_queueing:managequeue list-configured -istomp
+
+   *not yet supported:* ask the broker for queue info
 
         php app/console kaliop_queueing:managequeue info -istomp <queue>
 

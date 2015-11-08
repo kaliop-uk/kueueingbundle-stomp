@@ -57,7 +57,7 @@ class Driver extends ContainerAware implements DriverInterface
     public function getQueueManager($queueName)
     {
         $mgr = $this->container->get('kaliop_queueing.stomp.queue_manager');
-        $mgr->setStompQueueName($queueName);
+        $mgr->setQueueName($queueName);
         return $mgr;
     }
 
