@@ -60,7 +60,11 @@ class QueueManager implements ContainerAwareInterface, QueueManagerInterface
         }
         if ($type = Queue::TYPE_CONSUMER || $type = Queue::TYPE_ANY) {
             foreach ($this->registeredConsumers as $queueName) {
-                $out[$queueName] = Queue::TYPE_CONSUMER;
+                if (isset($out[$queueName])) {
+                    $out[$queueName] = Queue::TYPE_ANY;
+                } else {
+                    $out[$queueName] = Queue::TYPE_CONSUMER;
+                }
             }
         }
         return $out;
@@ -68,6 +72,7 @@ class QueueManager implements ContainerAwareInterface, QueueManagerInterface
 
     /**
      * Used to keep track of the queues which are available (configured in the bundle)
+     * @param string $queueName
      */
     public function registerProducer($queueName) {
         $this->registeredProducers[] = $queueName;
@@ -75,6 +80,7 @@ class QueueManager implements ContainerAwareInterface, QueueManagerInterface
 
     /**
      * Used to keep track of the queues which are available (configured in the bundle)
+     * @param string $queueName
      */
     public function registerConsumer($queueName) {
         $this->registeredConsumers[] = $queueName;
