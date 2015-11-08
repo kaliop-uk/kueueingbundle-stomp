@@ -57,7 +57,7 @@ class Driver extends ContainerAware implements DriverInterface
     public function getQueueManager($queueName)
     {
         $mgr = $this->container->get('kaliop_queueing.stomp.queue_manager');
-        $mgr->setQueueName($queueName);
+        $mgr->setStompQueueName($queueName);
         return $mgr;
     }
 
@@ -99,7 +99,7 @@ class Driver extends ContainerAware implements DriverInterface
     {
         $class = $this->container->getParameter('kaliop_queueing.stomp.producer.class');
         $producer = new $class($this->getConnectionConfig($connectionId));
-        $producer->setQueueName($queueDestination);
+        $producer->setStompQueueName($queueDestination);
         $this->container->set("kaliop_queueing.stomp.{$queueName}_producer", $producer, $scope);
         return $producer;
     }
@@ -120,7 +120,7 @@ class Driver extends ContainerAware implements DriverInterface
     {
         $class = $this->container->getParameter('kaliop_queueing.stomp.consumer.class');
         $consumer = new $class($this->getConnectionConfig($connectionId));
-        $consumer->setSubscriptionName($subscriptionName)->setQueueName($queueDestination)->setRoutingKey($routingKey);
+        $consumer->setSubscriptionName($subscriptionName)->setStompQueueName($queueDestination)->setRoutingKey($routingKey)->setQueueName($queueName);
         if ($callback != null) {
             $consumer->setCallBack($callback);
         }

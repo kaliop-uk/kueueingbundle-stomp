@@ -8,7 +8,7 @@ class Stomp
     protected $client;
     protected $username;
     protected $password;
-    protected $queueName;
+    protected $stompQueueName;
     protected $connected = false;
 
     /**
@@ -56,9 +56,9 @@ class Stomp
      *                          message delivery pattern
      * @return Producer
      */
-    public function setQueueName($queueName)
+    public function setStompQueueName($queueName)
     {
-        $this->queueName = $queueName;
+        $this->stompQueueName = $queueName;
 
         return $this;
     }
@@ -66,9 +66,9 @@ class Stomp
     /**
      * @return string the queue name as used by Stomp
      */
-    public function getQueueName()
+    public function getStompQueueName()
     {
-        return $this->queueName;
+        return $this->setompQueueName;
     }
 
     /**
@@ -80,7 +80,7 @@ class Stomp
      */
     protected function getFullQueueName($routingKey = '')
     {
-        $queueName = $this->queueName;
+        $queueName = $this->stompQueueName;
         if ($routingKey != '') {
             $routingKey = str_replace('#', '**', $routingKey);
             $queueName = rtrim($queueName, '.') . '.' . ltrim($routingKey, '.');

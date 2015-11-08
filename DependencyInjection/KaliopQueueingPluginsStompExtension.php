@@ -64,7 +64,7 @@ class KaliopQueueingPluginsStompExtension extends Extension
 
             $pDefinition = new Definition('%kaliop_queueing.stomp.producer.class%', array($connectionDefinition));
             $pDefinition
-                ->addMethodCall('setQueueName', array($producer['queue_options']['name']))
+                ->addMethodCall('setStompQueueName', array($producer['queue_options']['name']))
             ;
             $name = sprintf('kaliop_queueing.stomp.%s_producer', $key);
             $this->container->setDefinition($name, $pDefinition);
@@ -97,7 +97,7 @@ class KaliopQueueingPluginsStompExtension extends Extension
             $cDefinition = new Definition('%kaliop_queueing.stomp.consumer.class%', array($connectionDefinition));
             $cDefinition
                 ->addMethodCall('setSubscriptionName', array($consumer['subscription_options']['name']))
-                ->addMethodCall('setQueueName', array($consumer['queue_options']['name']))
+                ->addMethodCall('setStompQueueName', array($consumer['queue_options']['name']))
                 ->addMethodCall('setCallback', array(new Reference($consumer['callback'])));
             ;
             if (count($consumer['subscription_options']['routing_keys'])) {
