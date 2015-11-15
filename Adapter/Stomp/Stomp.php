@@ -73,17 +73,27 @@ class Stomp
 
     /**
      * Returns the full queue name to be used in stomp messages.
-     * Apache Apollo supports using routing keys at end of queue name @see https://activemq.apache.org/apollo/documentation/stomp-manual.html
-     * RabbitMQ... @see https://www.rabbitmq.com/stomp.html
-     * @param string $routingKey
+     * - Apache Apollo supports using routing keys at end of queue name @see https://activemq.apache.org/apollo/documentation/stomp-manual.html#Destination_Wildcards
+     * - ActiveMQ: @see http://activemq.apache.org/wildcards.html
+     * - RabbitMQ... @see https://www.rabbitmq.com/stomp.html
+     *
+     * @param string $routingKey assumes the amqp pattern: *=1word, #=0-or-more
      * @return string;
      */
     protected function getFullQueueName($routingKey = '')
     {
         $queueName = $this->stompQueueName;
         if ($routingKey != '') {
-            $routingKey = str_replace('#', '**', $routingKey);
-            $queueName = rtrim($queueName, '.') . '.' . ltrim($routingKey, '.');
+            switch($this->client->brokerVendor) {
+                case 'Apollo':
+                    $routingKey = str_replace('#', '**', $routingKey);
+                    $queueName = rtrim($queueName, '.') . '.' . ltrim($routingKey, '.');
+                    break;
+                case 'AMQ':
+                default:
+                    $routingKey = str_replace('#', '>', $routingKey);
+                    $queueName = rtrim($queueName, '.') . '.' . ltrim($routingKey, '.');
+            }
         }
         return $queueName;
     }
