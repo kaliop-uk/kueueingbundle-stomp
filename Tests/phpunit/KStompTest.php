@@ -131,7 +131,7 @@ abstract class KStompTest extends WebTestCase
             case 'apollo':
                 return '/topic/';
 
-            case 'rabbitmq':
+            case 'activemq':
                 switch($mode) {
                     case 'producer':
                         return '/topic/VirtualTopic.';
