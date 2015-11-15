@@ -13,6 +13,8 @@ class Consumer extends Stomp implements ConsumerInterface
     protected $logger;
     protected $subscribed = false;
     protected $queueName;
+    protected $subscriptionName;
+    protected $label;
 
     public function setLogger(LoggerInterface $logger = null)
     {
@@ -37,10 +39,27 @@ class Consumer extends Stomp implements ConsumerInterface
      */
     public function setSubscriptionName($name)
     {
-        $this->client->clientId = $name;
-        $this->subscribed = false;
+        $this->subscriptionName = $name;
+        $this->setClientId();
 
         return $this;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
+        $this->setClientId();
+
+        return $this;
+    }
+
+    protected function setClientId()
+    {
+        $newId = $this->subscriptionName . ($this->label != '' ? '_' . $this->label : '');
+        if ($newId != $this->client->clientId) {
+            $this->client->clientId = $newId;
+            $this->subscribed = false;
+        }
     }
 
     /**
@@ -142,7 +161,7 @@ class Consumer extends Stomp implements ConsumerInterface
         switch($command)
         {
             case 'SUBSCRIBE';
-                $result = array_merge(array('persistent' => 'true'), $result);
+                //$result = array_merge(array('persistent' => 'true'), $result);
                 break;
         }
 

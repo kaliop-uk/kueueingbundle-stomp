@@ -54,7 +54,8 @@ class Client extends BaseClient
     }
 
     /**
-     * Register to listen to a given destination. Reimplemented to support Apollo
+     * Register to listen to a given destination.
+     * Reimplemented to support Apollo, and subscriptions to both ActiveMQ queues and topics
      *
      * @param string $destination Destination queue
      * @param array $properties
@@ -73,7 +74,9 @@ class Client extends BaseClient
 
         if ($this->clientId != null) {
             if ($this->brokerVendor == 'AMQ') {
-                $headers['activemq.subscriptionName'] = $this->clientId;
+                if (strpos($destination, '/queue/') !== 0) {
+                    $headers['activemq.subscriptionName'] = $this->clientId;
+                }
             } else if ($this->brokerVendor == 'RMQ' || $this->brokerVendor == 'Apollo') {
                 $headers['id'] = $this->clientId;
             }
