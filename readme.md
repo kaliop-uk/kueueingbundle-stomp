@@ -3,7 +3,7 @@
 Adds support for the STOMP protocol to the Kaliop Queueing Bundle
 
 STOMP is a protocol used by multiple messaging brokers, such as ActiveMQ, Apache Apollo and RabbitMQ (but we suggest you
-use AMQP to communicate with RabbitMQ, which is supported natively by the Queueing Bundle) 
+use AMQP to communicate with RabbitMQ, which is supported natively by the Queueing Bundle)
 
 Currently the bundle is tested using Apache Apollo and Apache ActiveMQ.
 
@@ -21,15 +21,15 @@ See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle res
 
 ## Usage
 
-4. Start the messaging broker of your choice 
+4. Start the messaging broker of your choice
 
 5. Create a queue, using the appropriate management console:
-    
-    * Apollo
-    
+
+    * Apollo: : no need, queues and topics are created based on need
+
     * ActiveMQ: no need, queues and topics are created based on need
-    
-    * Stomp
+
+    * RabbitMQ:
 
 6. Set up configuration according to your broker
 
@@ -55,8 +55,17 @@ See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle res
 ## Notes
 
 * Stomp does *not* natively support routing-keys the way that RabbitMQ does.
-    This bundle *does* add back support for routing-keys, but the way those are handled differs with each broker.
+    Also, the implementation of Topic and Queue messaging patterns is left to the single brokers.
 
+    This bundle *does* add back support for routing-keys. It also strives to replicate the same messaging pattern
+    regardless of the broker in use. The way to achieve that differs with each broker.
+
+    In particular:
+
+    - for ActiveMQ, 'Virtual Topics' are used ( http://activemq.apache.org/virtual-destinations.html )
+    - for Apollo, topics with persistent subscriptions are used
+
+    In the bundle configuration, the same wildcard characters are to be used regardless of teh broker in use: # and *
 
 [![License](https://poser.pugx.org/kaliop/queueingbundle-stomp/license)](https://packagist.org/packages/kaliop/queueingbundle-stomp)
 [![Latest Stable Version](https://poser.pugx.org/kaliop/queueingbundle-stomp/v/stable)](https://packagist.org/packages/kaliop/queueingbundle-stomp)

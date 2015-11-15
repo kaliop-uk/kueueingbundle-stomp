@@ -3,20 +3,41 @@ kaliop_queueing_plugins_stomp:
 
     connections:
         default:
-            connect_string: "tcp://localhost:61613""
+            connect_string: "tcp://localhost:61613"
             credentials:
                 login: "admin"
                 passcode: "password"
 
 
-    queues:
+    producers:
         # name as used by console commands
         console_command_queue:
+            # as defined above
             connection: default
             queue_options:
-                # name of the queue on the Stomp server
-                name: /topic/console_command
-                # Routing keys available on this queue are the command to be executed, with doublecolon replaced by dots
+                # Name of the queue (destination) on the Stomp server.
+                # For Apollo, it HAS to be prefixed by /topic/
+                # For ActiveMQ, it HAS to be prefixed by /queue/, and named VirtualTopic.<queuename> (unless you change the default configuration)
+                name: /topic/VirtualTopic.consolecommand
+
+    consumers:
+        # name as used by console commands
+        console_command_queue:
+            # as defined above
+            connection: default
+            queue_options:
+                # Name of the queue (destination) on the Stomp server.
+                # For Apollo, it HAS to be prefixed by /topic/
+                # For ActiveMQ, it HAS to be prefixed by /queue/, and named Consumer.<any>.VirtualTopic.<queuename>
+                name: /queue/Consumer.hello.VirtualTopic.consolecommand
+            subscription_options:
+                # Name of the queue subscription.
+                # The system is desiged to work like a queue in RabbitMQ:
+                # - each message posted to a topic will only be delivered once to each subscription to that topic
+                # - two processes consuming messages from a subscriptio
+                name: consolecommands_default_queue
+                # Routing keys get appended to the topic name
+                # Words are separated by dots
                 # A hash sign is a widlcard, while a star matches one word only
                 # Ex: kaliop.# matches all commands starting with 'kaliop:'
                 # NB take extra care about securing your environment when you allow execution of commands sent from remote hosts
