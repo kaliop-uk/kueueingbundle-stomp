@@ -67,6 +67,7 @@ abstract class KStompTest extends WebTestCase
 
     /**
      * Does nothing but generate a unique queue name, since queues are auto-created by the broker on demand
+     * @param bool $withConsumer
      * @return string
      */
     protected function createQueue($withConsumer = true)
@@ -74,9 +75,10 @@ abstract class KStompTest extends WebTestCase
         $queueName = $this->getNewQueueName();
         $driver = $this->getDriver();
 
-        $queueUrl = '/topic/'.$queueName;
+        $queueUrl = $this->getStompPrefix('producer').$queueName;
         $driver->createProducer($queueName, $queueUrl, 'default');
         if ($withConsumer) {
+            $queueUrl = $this->getStompPrefix('consumer').$queueName;
             $driver->createConsumer($queueName, $queueUrl, 'default', 'default_subscription_'.self::$queueCounter);
         }
 
@@ -91,7 +93,7 @@ abstract class KStompTest extends WebTestCase
         $driver = $this->getDriver();
 
         if ($queueUrl == '') {
-            $queueUrl = '/topic/'.$queueName;
+            $queueUrl = $this->getStompPrefix('consumer').$queueName;
         }
         $driver->createConsumer($queueName, $queueUrl, 'default', $subscriptionName);
 
@@ -105,7 +107,7 @@ abstract class KStompTest extends WebTestCase
     {
         $names = array();
         for ($i = 1; $i <= $count; $i++) {
-            $names[] = $this->createConsumer($queueName . '_' . $i, $queueName . '_' .  $i, '/topic/' . $queueName);
+            $names[] = $this->createConsumer($queueName . '_' . $i, $queueName . '_' .  $i, $this->getStompPrefix('consumer') . $queueName);
         }
         return $names;
     }
@@ -120,5 +122,27 @@ abstract class KStompTest extends WebTestCase
         $buildId .= '_' . self::$queueCounter;
         self::$queueCounter++;
         return str_replace( '/', '_', $buildId );
+    }
+
+    protected function getStompPrefix($mode)
+    {
+        $broker = getenv('BROKER');
+        switch($broker) {
+            case 'apollo':
+                return '/topic/';
+
+            case 'rabbitmq':
+                switch($mode) {
+                    case 'producer':
+                        return '/topic/VirtualTopic.';
+                    case 'consumer':
+                        return '/queue/Consumer.test.VirtualTopic.';
+                    default:
+                        throw new \Exception("Mode '$mode' unknown");
+                }
+                break;
+            default:
+                throw new \Exception("Broker '$broker' unknown");
+        }
     }
 }

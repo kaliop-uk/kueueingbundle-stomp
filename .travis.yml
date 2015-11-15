@@ -18,7 +18,7 @@ env:
 #  - SYMFONY_VERSION=2.7.* BROKER=apollo
 
 #  - SYMFONY_VERSION=2.3.* BROKER=rabbitmq
-#  - SYMFONY_VERSION=2.6.* BROKER=rabbitmq
+  - SYMFONY_VERSION=2.6.* BROKER=rabbitmq
 #  - SYMFONY_VERSION=2.7.* BROKER=rabbitmq
 
 #  - SYMFONY_VERSION=2.3.* BROKER=activemq
