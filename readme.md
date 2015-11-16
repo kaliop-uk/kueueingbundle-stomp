@@ -62,8 +62,10 @@ See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle res
 
     In particular:
 
-    - for ActiveMQ, 'Virtual Topics' are used ( http://activemq.apache.org/virtual-destinations.html )
     - for Apollo, topics with persistent subscriptions are used
+    - for ActiveMQ, 'Virtual Topics' are used ( http://activemq.apache.org/virtual-destinations.html )
+    - NB: ActiveMQ 5.5 seems to have a bug with wildcard support when using '#' as key. If this is a problem for you, please
+      upgrade to a later version
 
     In the bundle configuration, the same wildcard characters are to be used regardless of teh broker in use: # and *
 
