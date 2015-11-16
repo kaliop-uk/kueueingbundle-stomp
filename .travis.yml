@@ -5,8 +5,8 @@ sudo: true
 
 php:
   - 5.3
-#  - 5.4
-#  - 5.5
+  - 5.4
+  - 5.5
 #  - 5.6
 #  - 7.0
 #  - hhvm
@@ -29,6 +29,8 @@ matrix:
   allow_failures:
     # at the moment it gives a core dump because of generation of code coverage...
     #- php: 5.6
+    # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
+    - env: SYMFONY_VERSION=2.6.* BROKER=activemq
 
 services:
   - rabbitmq

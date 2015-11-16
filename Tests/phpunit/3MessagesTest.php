@@ -27,10 +27,29 @@ class MessagesTest extends KStompTest
         $this->assertContains('world', $accumulator->getConsumptionResult());
     }
 
+    public function testSendAndReceiveMessages()
+    {
+        $queueName = $this->createQueue();
+
+        $consumer = $this->getConsumer($queueName, 'kaliop_queueing.message_consumer.noop');
+        // warm up the topic by creating the durable subscription
+        $consumer->consume(1, 1);
+
+        $msgProducer = $this->getMsgProducer($queueName, 'kaliop_queueing.message_producer.generic_message');
+        $msgProducer->publish('{"hello":"world"}');
+        $msgProducer->publish('{"bonjour":"monde"}');
+        $msgProducer->publish('{"ciao":"mondo"}');
+
+        $consumer->consume(4, $this->timeout);
+
+        $accumulator = $this->getContainer()->get('kaliop_queueing.message_consumer.filter.accumulator');
+        $this->assertEquals(3, $accumulator->countConsumptionResult());
+    }
+
     public function testSendAndReceiveMessageWithRouting()
     {
         $queueName = $this->createQueue(false);
-        list ($cQueueName1, $cQueueName2) = $this->createConsumers($queueName, 2, 'kaliop_queueing.message_consumer.noop');
+        list ($cQueueName1, $cQueueName2) = $this->createConsumers($queueName, 2);
         $c1 = $this->getConsumer($cQueueName1, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.world');
         $c2 = $this->getConsumer($cQueueName2, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('bonjour.monde');
 
@@ -53,7 +72,7 @@ class MessagesTest extends KStompTest
     public function testSendAndReceiveMessageWithRoutingWildcard()
     {
         $queueName = $this->createQueue(false);
-        list ($cQueueName1, $cQueueName2) = $this->createConsumers($queueName, 2, 'kaliop_queueing.message_consumer.noop');
+        list ($cQueueName1, $cQueueName2) = $this->createConsumers($queueName, 2);
         $c1 = $this->getConsumer($cQueueName1, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('*.world');
         $c2 = $this->getConsumer($cQueueName2, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.*');
 
@@ -78,7 +97,7 @@ class MessagesTest extends KStompTest
     public function testSendAndReceiveMessageWithRoutingHash()
     {
         $queueName = $this->createQueue(false);
-        list ($cQueueName1, $cQueueName2, $cQueueName3) = $this->createConsumers($queueName, 3, 'kaliop_queueing.message_consumer.noop');
+        list ($cQueueName1, $cQueueName2, $cQueueName3) = $this->createConsumers($queueName, 3);
         $c1 = $this->getConsumer($cQueueName1, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.#');
         $c2 = $this->getConsumer($cQueueName2, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('#.world');
         $c3 = $this->getConsumer($cQueueName3, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('#');
@@ -98,13 +117,13 @@ class MessagesTest extends KStompTest
 
         $c1->consume(1, $this->timeout);
         $this->assertContains('eng', $accumulator->getConsumptionResult());
-
         $c2->consume(1, $this->timeout);
         $this->assertContains('eng', $accumulator->getConsumptionResult());
 
         $accumulator->reset();
         // this could give us back either message, as order of delivery is not guaranteed
         $c3->consume(2, $this->timeout);
+        $this->assertEquals(2, $accumulator->countConsumptionResult());
         $this->assertThat(
             $accumulator->getConsumptionResult(),
             $this->logicalOr(
@@ -112,6 +131,5 @@ class MessagesTest extends KStompTest
                 $this->contains('fre')
             )
         );
-        $this->assertEquals(2, $accumulator->countConsumptionResult());
     }
 }
