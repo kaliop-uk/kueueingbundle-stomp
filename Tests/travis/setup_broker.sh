@@ -13,7 +13,7 @@ apollo)
     ;;
 activemq)
     sudo apt-get install activemq
-    sudo sed - i '/<transportConnectors>/<transportConnectors><transportConnector name="stomp" uri="stomp://0.0.0.0:61613"\/>/g' /etc/activemq/instances-available/main/rabbitmq.xml
+    sudo sed -i '/<transportConnectors>/<transportConnectors><transportConnector name="stomp" uri="stomp://0.0.0.0:61613"\/>/g' /etc/activemq/instances-available/main/rabbitmq.xml
     sudo ln -s /etc/activemq/instances-available/main /etc/activemq/instances-enabled/
     sudo service activemq restart
     ;;
