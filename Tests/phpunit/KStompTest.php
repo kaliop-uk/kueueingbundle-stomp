@@ -67,6 +67,7 @@ abstract class KStompTest extends WebTestCase
 
     /**
      * Does nothing but generate a unique queue name, since queues are auto-created by the broker on demand
+     * @param bool $withConsumer
      * @return string
      */
     protected function createQueue($withConsumer = true)
