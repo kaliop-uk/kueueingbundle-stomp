@@ -5,10 +5,13 @@ namespace Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp;
 use FuseSource\Stomp\Stomp as BaseClient;
 use FuseSource\Stomp\Frame;
 use FuseSource\Stomp\Exception\StompException;
+use Kaliop\QueueingBundle\Adapter\ForcedStopException;
 
 class Client extends BaseClient
 {
     public $debug = false;
+    protected $forceStop = false;
+    protected $dispatchSignals = false;
 
     /**
      * Connect to server. Reimplemented to sniff out Apollo
@@ -181,4 +184,86 @@ class Client extends BaseClient
         return $frame;
     }
 
+    /**
+     * Make socket connection to the server
+     * Reimplemented to support forcestop
+     *
+     * @throws StompException
+     */
+    protected function _makeConnection()
+    {
+        if (count($this->_hosts) == 0) {
+            throw new StompException("No broker defined");
+        }
+
+        // force disconnect, if previous established connection exists
+        $this->disconnect();
+
+        $i = $this->_currentHost;
+        $att = 0;
+        $connected = false;
+        $connect_errno = null;
+        $connect_errstr = null;
+
+        while (! $connected && $att ++ < $this->_attempts) {
+            if (isset($this->_params['randomize']) && $this->_params['randomize'] == 'true') {
+                $i = rand(0, count($this->_hosts) - 1);
+            } else {
+                $i = ($i + 1) % count($this->_hosts);
+            }
+            $broker = $this->_hosts[$i];
+            $host = $broker[0];
+            $port = $broker[1];
+            $scheme = $broker[2];
+            if ($port == null) {
+                $port = $this->_defaultPort;
+            }
+            if ($this->_socket != null) {
+                fclose($this->_socket);
+                $this->_socket = null;
+            }
+
+            $this->_socket = @fsockopen($scheme . '://' . $host, $port, $connect_errno, $connect_errstr, $this->_connect_timeout_seconds);
+
+            $this->maybeStopClient();
+
+            if (!is_resource($this->_socket) && $att >= $this->_attempts && !array_key_exists($i + 1, $this->_hosts)) {
+                throw new StompException("Could not connect to $host:$port ($att/{$this->_attempts})");
+            } else if (is_resource($this->_socket)) {
+                $connected = true;
+                $this->_currentHost = $i;
+                break;
+            }
+        }
+        if (! $connected) {
+            throw new StompException("Could not connect to a broker");
+        }
+    }
+
+    public function setHandleSignals($doHandle)
+    {
+        $this->dispatchSignals = $doHandle;
+    }
+
+    public function forceStop()
+    {
+        $this->forceStop = true;
+    }
+
+    /**
+     * Dispatches signals and throws an exception if user wants to stop. To be called at execution points when there is no data loss
+     *
+     * @param string $message
+     * @throws ForcedStopException
+     */
+    protected function maybeStopClient($message = '')
+    {
+        if ($this->dispatchSignals) {
+            pcntl_signal_dispatch();
+        }
+
+        if ($this->forceStop) {
+            throw new ForcedStopException($message);
+        }
+    }
 }

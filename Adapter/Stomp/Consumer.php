@@ -4,9 +4,11 @@ namespace Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp;
 
 use Kaliop\QueueingBundle\Queue\MessageConsumerInterface;
 use Kaliop\QueueingBundle\Queue\ConsumerInterface;
+use Kaliop\QueueingBundle\Queue\SignalHandlingConsumerInterface;
+use Kaliop\QueueingBundle\Adapter\ForcedStopException;
 use Psr\Log\LoggerInterface;
 
-class Consumer extends Stomp implements ConsumerInterface
+class Consumer extends Stomp implements ConsumerInterface, SignalHandlingConsumerInterface
 {
     protected $callback;
     protected $routingKey;
@@ -15,6 +17,8 @@ class Consumer extends Stomp implements ConsumerInterface
     protected $queueName;
     protected $subscriptionName;
     protected $label;
+    protected $forceStop = false;
+    protected $dispatchSignals = false;
 
     public function setLogger(LoggerInterface $logger = null)
     {
@@ -147,6 +151,8 @@ class Consumer extends Stomp implements ConsumerInterface
                 }
             }
 
+            $this->maybeStopConsumer();
+
             if ($timeout > 0 && ($remaining = ($startTime + $timeout - time())) <= 0) {
                 return;
             }
@@ -182,4 +188,33 @@ class Consumer extends Stomp implements ConsumerInterface
         }
     }
 
+    public function setHandleSignals($doHandle)
+    {
+        $this->dispatchSignals = $doHandle;
+        $this->client->setHandleSignals($doHandle);
+    }
+
+
+    public function forceStop()
+    {
+        $this->forceStop = true;
+        $this->client->forceStop();
+    }
+
+    /**
+     * Dispatches signals and throws an exception if user wants to stop. To be called at execution points when there is no data loss
+     *
+     * @param string $message
+     * @throws ForcedStopException
+     */
+    protected function maybeStopConsumer($message = '')
+    {
+        if ($this->dispatchSignals) {
+            pcntl_signal_dispatch();
+        }
+
+        if ($this->forceStop) {
+            throw new ForcedStopException($message);
+        }
+    }
 }
