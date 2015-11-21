@@ -40,7 +40,9 @@ kaliop_queueing_plugins_stomp:
                 # Words are separated by dots
                 # A hash sign is a widlcard, while a star matches one word only
                 # Ex: kaliop.# matches all commands starting with 'kaliop:'
-                # NB take extra care about securing your environment when you allow execution of commands sent from remote hosts
+                # NB: take extra care about securing your environment when you allow execution of commands sent from remote hosts
+                # NB: it is not mandatory to have any routing key at all, *but* take care that the message producers
+                #     from the queueingbundle do add routing keys to their messages by default
                 routing_keys: [ '#' ]
             # the name of the callback is fixed
             callback: kaliop_queueing.message_consumer.console_command

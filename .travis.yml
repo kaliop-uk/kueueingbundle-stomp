@@ -5,8 +5,8 @@ sudo: true
 
 php:
   - 5.3
-#  - 5.4
-#  - 5.5
+  - 5.4
+  - 5.5
 #  - 5.6
 #  - 7.0
 #  - hhvm
@@ -22,20 +22,22 @@ env:
 #  - SYMFONY_VERSION=2.7.* BROKER=rabbitmq
 
 #  - SYMFONY_VERSION=2.3.* BROKER=activemq
-#  - SYMFONY_VERSION=2.6.* BROKER=activemq
+  - SYMFONY_VERSION=2.6.* BROKER=activemq
 #  - SYMFONY_VERSION=2.7.* BROKER=activemq
 
 matrix:
   allow_failures:
     # at the moment it gives a core dump because of generation of code coverage...
     #- php: 5.6
+    # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
+    - env: SYMFONY_VERSION=2.6.* BROKER=activemq
 
 services:
   - rabbitmq
 
 before_install:
   # This is mandatory or 'apt-get install' calls following will fail
-  - if [ "$BROKER" = "activemq" ]; then sudo apt-get update -qq && sudo apt-get install activemq; fi
+  - sudo apt-get update -qq
   # Install a more recent Xdebug version, as the default one (2.2.7) crashes when generating code coverage
   #- if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then ./Tests/travis/setup_xdebug.sh; fi
   - ./Tests/travis/setup_broker.sh $BROKER
