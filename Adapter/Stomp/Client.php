@@ -11,6 +11,7 @@ class Client extends BaseClient
 {
     public $debug = false;
     protected $forceStop = false;
+    protected $forceStopReason;
     protected $dispatchSignals = false;
 
     /**
@@ -245,25 +246,25 @@ class Client extends BaseClient
         $this->dispatchSignals = $doHandle;
     }
 
-    public function forceStop()
+    public function forceStop($reason = '')
     {
         $this->forceStop = true;
+        $this->forceStopReason = $reason;
     }
 
     /**
      * Dispatches signals and throws an exception if user wants to stop. To be called at execution points when there is no data loss
      *
-     * @param string $message
      * @throws ForcedStopException
      */
-    protected function maybeStopClient($message = '')
+    protected function maybeStopClient()
     {
         if ($this->dispatchSignals) {
             pcntl_signal_dispatch();
         }
 
         if ($this->forceStop) {
-            throw new ForcedStopException($message);
+            throw new ForcedStopException($this->forceStopReason);
         }
     }
 }
