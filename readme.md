@@ -73,5 +73,5 @@ See: https://stomp.github.io and https://github.com/kaliop-uk/kueueingbundle res
 [![Latest Stable Version](https://poser.pugx.org/kaliop/queueingbundle-stomp/v/stable)](https://packagist.org/packages/kaliop/queueingbundle-stomp)
 [![Total Downloads](https://poser.pugx.org/kaliop/queueingbundle-stomp/downloads)](https://packagist.org/packages/kaliop/queueingbundle-stomp)
 
-[![Build Status](https://travis-ci.org/kaliop-uk/queueingbundle-stomp.svg?branch=master)](https://travis-ci.org/kaliop-uk/queueingbundle-stomp)
+[![Build Status](https://travis-ci.org/kaliop-uk/kueueingbundle-stomp.svg?branch=master)](https://travis-ci.org/kaliop-uk/queueingbundle-stomp)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/56f99664-6264-42ab-b602-b4c26083ff25/mini.png)](https://insight.sensiolabs.com/projects/56f99664-6264-42ab-b602-b4c26083ff25)
