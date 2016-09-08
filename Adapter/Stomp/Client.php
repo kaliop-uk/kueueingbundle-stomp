@@ -4,6 +4,7 @@ namespace Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp;
 
 use FuseSource\Stomp\Stomp as BaseClient;
 use FuseSource\Stomp\Frame;
+use FuseSource\Stomp\Message\Map;
 use FuseSource\Stomp\Exception\StompException;
 
 class Client extends BaseClient
