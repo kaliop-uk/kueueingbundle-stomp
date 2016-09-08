@@ -4,9 +4,11 @@ namespace Kaliop\Queueing\Plugins\StompBundle\Adapter\Stomp;
 
 use Kaliop\QueueingBundle\Queue\MessageConsumerInterface;
 use Kaliop\QueueingBundle\Queue\ConsumerInterface;
+use Kaliop\QueueingBundle\Queue\SignalHandlingConsumerInterface;
+use Kaliop\QueueingBundle\Adapter\ForcedStopException;
 use Psr\Log\LoggerInterface;
 
-class Consumer extends Stomp implements ConsumerInterface
+class Consumer extends Stomp implements ConsumerInterface, SignalHandlingConsumerInterface
 {
     protected $callback;
     protected $routingKey;
@@ -15,6 +17,10 @@ class Consumer extends Stomp implements ConsumerInterface
     protected $queueName;
     protected $subscriptionName;
     protected $label;
+    protected $forceStop = false;
+    protected $forceStopReason;
+    protected $dispatchSignals = false;
+    protected $memoryLimit = null;
 
     public function setLogger(LoggerInterface $logger = null)
     {
@@ -24,12 +30,13 @@ class Consumer extends Stomp implements ConsumerInterface
     }
 
     /**
-     * Does nothing
-     * @param int $limit
+     * @param int $limit MB
      * @return $this
      */
     public function setMemoryLimit($limit)
     {
+        $this->memoryLimit = $limit;
+
         return $this;
     }
 
@@ -147,6 +154,8 @@ class Consumer extends Stomp implements ConsumerInterface
                 }
             }
 
+            $this->maybeStopConsumer();
+
             if ($timeout > 0 && ($remaining = ($startTime + $timeout - time())) <= 0) {
                 return;
             }
@@ -182,4 +191,37 @@ class Consumer extends Stomp implements ConsumerInterface
         }
     }
 
+    public function setHandleSignals($doHandle)
+    {
+        $this->dispatchSignals = $doHandle;
+        $this->client->setHandleSignals($doHandle);
+    }
+
+
+    public function forceStop($reason = '')
+    {
+        $this->forceStop = true;
+        $this->forceStopReason = $reason;
+        $this->client->forceStop($reason);
+    }
+
+    /**
+     * Dispatches signals and throws an exception if user wants to stop. To be called at execution points when there is no data loss
+     *
+     * @throws ForcedStopException
+     */
+    protected function maybeStopConsumer()
+    {
+        if ($this->dispatchSignals) {
+            pcntl_signal_dispatch();
+        }
+
+        if ($this->memoryLimit > 0 && !$this->forceStop && memory_get_usage(true) >= ($this->memoryLimit * 1024 * 1024)) {
+            $this->forceStop("Memory limit of {$this->memoryLimit} MB reached while consuming messages");
+        }
+
+        if ($this->forceStop) {
+            throw new ForcedStopException($this->forceStopReason);
+        }
+    }
 }
