@@ -43,7 +43,9 @@ before_install:
   - ./Tests/travis/setup_broker.sh $BROKER
 
 install:
-  # Disable xdebug for speed (executing composer), but allow us to e-enable it later
+  - phpenv config-add Tests/travis/zzz_php.ini
+
+  # Disable xdebug for speed (executing composer), but allow us to re-enable it later
   # NB: 'php -i' does not work on hhvm
   - if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then export XDEBUG_INI=''; fi
   - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then export XDEBUG_INI=`php -i | grep xdebug.ini | grep home/travis | grep -v '=>' | head -1`; fi
