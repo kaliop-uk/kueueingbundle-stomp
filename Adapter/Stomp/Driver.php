@@ -95,15 +95,14 @@ class Driver implements DriverInterface, ContainerAwareInterface
      * @param string $queueName        the name to be used later when asking the producer to the driver
      * @param string $queueDestination the stomp destination
      * @param string $connectionId     the name of a stomp connection as set in configuration
-     * @param string $scope
      * @return Producer
      */
-    public function createProducer($queueName, $queueDestination, $connectionId, $scope=ContainerInterface::SCOPE_CONTAINER)
+    public function createProducer($queueName, $queueDestination, $connectionId)
     {
         $class = $this->container->getParameter('kaliop_queueing.stomp.producer.class');
         $producer = new $class($this->getConnectionConfig($connectionId));
         $producer->setStompQueueName($queueDestination);
-        $this->container->set("kaliop_queueing.stomp.{$queueName}_producer", $producer, $scope);
+        $this->container->set("kaliop_queueing.stomp.{$queueName}_producer", $producer);
         return $producer;
     }
 
