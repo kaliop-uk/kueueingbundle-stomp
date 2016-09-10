@@ -2,35 +2,34 @@ language: php
 
 # Sudo: false should make the builds faster, but collides with rabbitmq
 sudo: true
-
-php:
-  - 5.3
-  - 5.4
-  - 5.5
-#  - 5.6
-#  - 7.0
-#  - hhvm
-
-env:
-  # Test only on versions of Sf that are still supported. See: http://symfony.com/doc/current/contributing/community/releases.html#version-history
-  - SYMFONY_VERSION=2.3.* BROKER=apollo
-#  - SYMFONY_VERSION=2.6.* BROKER=apollo
-#  - SYMFONY_VERSION=2.7.* BROKER=apollo
-
-#  - SYMFONY_VERSION=2.3.* BROKER=rabbitmq
-#  - SYMFONY_VERSION=2.6.* BROKER=rabbitmq
-#  - SYMFONY_VERSION=2.7.* BROKER=rabbitmq
-
-#  - SYMFONY_VERSION=2.3.* BROKER=activemq
-  - SYMFONY_VERSION=2.6.* BROKER=activemq
-#  - SYMFONY_VERSION=2.7.* BROKER=activemq
+dist: trusty
 
 matrix:
+  # Test only on versions of Sf that are still supported. See: http://symfony.com/doc/current/contributing/community/releases.html#version-history
+    - php: 5.4
+      env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=apollo
+    - php: 5.5
+      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=apollo
+    - php: 5.6
+      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=1 BROKER=apollo
+    - php: 7.0
+      env: SYMFONY_VERSION=3.0.* CODE_COVERAGE=0 BROKER=apollo
+    - php: hhvm
+      env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=apollo
+    - php: 5.4
+      env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 5.5
+      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 5.6
+      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 7.0
+      env: SYMFONY_VERSION=3.0.* CODE_COVERAGE=0 BROKER=activemq
+    - php: hhvm
+      env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=activemq
+
   allow_failures:
-    # at the moment it gives a core dump because of generation of code coverage...
-    #- php: 5.6
     # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
-    - env: SYMFONY_VERSION=2.6.* BROKER=activemq
+    #- env: SYMFONY_VERSION=2.6.* BROKER=activemq
 
 services:
   - rabbitmq
