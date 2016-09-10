@@ -2,9 +2,11 @@ language: php
 
 # Sudo: false should make the builds faster, but collides with rabbitmq
 sudo: true
+
 dist: trusty
 
 matrix:
+  include:
   # Test only on versions of Sf that are still supported. See: http://symfony.com/doc/current/contributing/community/releases.html#version-history
     - php: 5.4
       env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=apollo
@@ -27,7 +29,7 @@ matrix:
     - php: hhvm
       env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=activemq
 
-  allow_failures:
+  #allow_failures:
     # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
     #- env: SYMFONY_VERSION=2.6.* BROKER=activemq
 
