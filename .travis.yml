@@ -31,7 +31,11 @@ matrix:
 
   allow_failures:
     # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
-    - env: BROKER=activemq
+    - env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=3.0.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=activemq
 
 services:
   - rabbitmq
