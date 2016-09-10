@@ -6,22 +6,22 @@ parameters:
 
 services:
     kaliop_queueing.driver.stomp:
-        class: %kaliop_queueing.driver.stomp.class%
+        class: '%kaliop_queueing.driver.stomp.class%'
         calls:
-            - [ setContainer, [ @service_container ] ]
+            - [ setContainer, [ '@service_container' ] ]
         tags:
             - { name: kaliop_queueing.driver, alias: stomp }
 
     kaliop_queueing.stomp.queue_manager:
-        class: %kaliop_queueing.stomp.queue_manager.class%
+        class: '%kaliop_queueing.stomp.queue_manager.class%'
         #parent: kaliop_queueing.message_producer
         calls:
-            - [ setContainer, [ @service_container ] ]
+            - [ setContainer, [ '@service_container' ] ]
 
     #kaliop_queueing.stomp.producer:
-    #    class: %kaliop_queueing.stomp.producer.class%
-    #    arguments: [ %kaliop_queueing_stomp.default.client_config% ]
+    #    class: '%kaliop_queueing.stomp.producer.class%'
+    #    arguments: [ '%kaliop_queueing_stomp.default.client_config%' ]
 
     #kaliop_queueing.stomp.consumer:
-    #    class: %kaliop_queueing.stomp.consumer.class%
-    #    arguments: [ %kaliop_queueing_stomp.default.client_config% ]
+    #    class: '%kaliop_queueing.stomp.consumer.class%'
+    #    arguments: [ '%kaliop_queueing_stomp.default.client_config%' ]
