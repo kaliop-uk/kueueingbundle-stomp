@@ -115,10 +115,9 @@ class Driver implements DriverInterface, ContainerAwareInterface
      * @param string $subscriptionName the name of the subscription to be used to connect to the broker
      * @param MessageConsumerInterface $callback
      * @param string $routingKey
-     * @param string $scope
      * @return Consumer
      */
-    public function createConsumer($queueName, $queueDestination, $connectionId, $subscriptionName, $callback=null, $routingKey=null, $scope=ContainerInterface::SCOPE_CONTAINER)
+    public function createConsumer($queueName, $queueDestination, $connectionId, $subscriptionName, $callback=null, $routingKey=null)
     {
         $class = $this->container->getParameter('kaliop_queueing.stomp.consumer.class');
         $consumer = new $class($this->getConnectionConfig($connectionId));
@@ -126,7 +125,7 @@ class Driver implements DriverInterface, ContainerAwareInterface
         if ($callback != null) {
             $consumer->setCallBack($callback);
         }
-        $this->container->set("kaliop_queueing.stomp.{$queueName}_consumer", $consumer, $scope);
+        $this->container->set("kaliop_queueing.stomp.{$queueName}_consumer", $consumer);
         return $consumer;
     }
 }
