@@ -1,41 +1,36 @@
 language: php
 
-# Sudo: false should make the builds faster, but collides with rabbitmq
-sudo: true
-
-dist: trusty
-
 matrix:
   include:
   # Test only on versions of Sf that are still supported. See: http://symfony.com/doc/current/contributing/community/releases.html#version-history
-    - php: 5.4
-      env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=apollo
-    - php: 5.5
+    - php: 5.6
       env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=apollo
-    - php: 5.6
+    - php: 7.0
       env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=1 BROKER=apollo
-    - php: 7.0
-      env: SYMFONY_VERSION=3.0.* CODE_COVERAGE=0 BROKER=apollo
-    - php: hhvm
-      env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=apollo
-    - php: 5.4
-      env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=activemq
-    - php: 5.5
-      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 7.1
+      env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=apollo
+    - php: 7.2
+      env: SYMFONY_VERSION=4.2.* CODE_COVERAGE=0 BROKER=apollo
+    - php: 7.3
+      env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=apollo
     - php: 5.6
-      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=0 BROKER=activemq
+      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
     - php: 7.0
-      env: SYMFONY_VERSION=3.0.* CODE_COVERAGE=0 BROKER=activemq
-    - php: hhvm
-      env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=activemq
+      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 7.1
+      env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 7.2
+      env: SYMFONY_VERSION=4.2.* CODE_COVERAGE=0 BROKER=activemq
+    - php: 7.3
+      env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=activemq
 
   allow_failures:
     # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
-    - env: SYMFONY_VERSION=2.6.* CODE_COVERAGE=0 BROKER=activemq
     - env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
     - env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=0 BROKER=activemq
-    - env: SYMFONY_VERSION=3.0.* CODE_COVERAGE=0 BROKER=activemq
-    - env: SYMFONY_VERSION=3.1.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=4.2.* CODE_COVERAGE=0 BROKER=activemq
+    - env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=activemq
 
 services:
   - rabbitmq
@@ -48,12 +43,10 @@ before_install:
   - ./Tests/travis/setup_broker.sh $BROKER
 
 install:
-  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then phpenv config-add Tests/travis/zzz_php.ini; fi
+  - phpenv config-add Tests/travis/zzz_php.ini
 
   # Disable xdebug for speed (executing composer), but allow us to re-enable it later
-  # NB: 'php -i' does not work on hhvm
-  - if [ "$TRAVIS_PHP_VERSION" = "hhvm" ]; then export XDEBUG_INI=''; fi
-  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then export XDEBUG_INI=`php -i | grep xdebug.ini | grep home/travis | grep -v '=>' | head -1`; fi
+  - export XDEBUG_INI=`php -i | grep xdebug.ini | grep home/travis | grep -v '=>' | head -1`
   - export XDEBUG_INI=${XDEBUG_INI/,/}
   - if [ "$XDEBUG_INI" != "" ]; then mv "$XDEBUG_INI" "$XDEBUG_INI.bak"; fi
 
@@ -68,11 +61,11 @@ before_script:
   - cp phpunit.xml.dist phpunit.xml
 
 script:
-  - if [ "$CODE_COVERAGE" = "1" ]; then phpunit --colors --coverage-clover=coverage.clover Tests/phpunit; else phpunit --colors Tests/phpunit; fi
+  - if [ "$CODE_COVERAGE" = "1" ]; then ./vendor/phpunit/phpunit/phpunit --colors --coverage-clover=coverage.clover Tests/phpunit; else phpunit --colors Tests/phpunit; fi
 
 after_failure:
   # Display as much info as we can to help developers
-  - if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php -i; fi
+  - php -i
 
 after_script:
   # Upload code-coverage to Scrutinizer

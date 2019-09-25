@@ -8,13 +8,12 @@
     "require": {
         "kaliop/queueingbundle": "^0.7",
         "fusesource/stomp-php": "^2.1",
-        "symfony/config": "^2.4 || ^3.0",
-        "symfony/dependency-injection": "^2.4 || ^3.0",
-        "symfony/http-kernel": "^2.4 || ^3.0"
+        "symfony/config": "^2.4 || ^3.0 || ^4.0",
+        "symfony/dependency-injection": "^2.4 || ^3.0 || ^4.0",
+        "symfony/http-kernel": "^2.4 || ^3.0 || ^4.0"
     },
     "require-dev": {
-        "symfony/symfony": "~2.3",
-        "phpunit/phpunit": "~4.0",
-        "codeclimate/php-test-reporter": "~0.2"
+        "symfony/symfony": "^2.4 || ^3.0 || ^4.0",
+        "phpunit/phpunit": "^5.7 || ^7.5"
     }
 }
