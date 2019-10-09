@@ -25,8 +25,8 @@ artemis)
     wget https://archive.apache.org/dist/activemq/activemq-artemis/2.10.1/apache-artemis-2.10.1-bin.tar.gz
     tar -zxvf apache-artemis-2.10.1-bin.tar.gz
     cd apache-artemis-2.10.1
-    ./bin/artemis create test-broker
-    ./bin/artemis run &
+    ./bin/artemis create test-broker --user=admin --password=password --require-login
+    ./test-broker/bin/artemis run &
     ;;
 *)
     echo unknown broker: $1
