@@ -9,6 +9,7 @@ services:
         class: '%kaliop_queueing.driver.stomp.class%'
         calls:
             - [ setContainer, [ '@service_container' ] ]
+            - [ setQueueManager, [ '@kaliop_queueing.stomp.queue_manager' ] ]
         tags:
             - { name: kaliop_queueing.driver, alias: stomp }
 

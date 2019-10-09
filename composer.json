@@ -6,7 +6,7 @@
         "psr-4": { "Kaliop\\Queueing\\Plugins\\StompBundle\\": "" }
     },
     "require": {
-        "kaliop/queueingbundle": "^0.7",
+        "kaliop/queueingbundle": "^0.8",
         "fusesource/stomp-php": "^2.1",
         "symfony/config": "^2.4 || ^3.0 || ^4.0",
         "symfony/dependency-injection": "^2.4 || ^3.0 || ^4.0",
