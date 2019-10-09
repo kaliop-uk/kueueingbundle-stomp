@@ -25,7 +25,7 @@ matrix:
       env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=activemq
 
   allow_failures:
-    # The tests fail with activemq 5.5, which is the version currently available on Ubuntu 12. And there is no activemq in Ubuntu backports
+    # Do the tests fail with activemq 5.13, which is the version currently available on Ubuntu 16?
     - env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
     - env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=0 BROKER=activemq
     - env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=activemq
@@ -35,7 +35,7 @@ matrix:
 before_install:
   # This is mandatory or 'apt-get install' calls following will fail
   - sudo apt-get update -qq
-  - sudo apt-get install rabbitmq-server -y
+  - sudo apt-get install rabbitmq-server activemq -y
   # Install a more recent Xdebug version, as the default one (2.2.7) crashes when generating code coverage
   #- if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then ./Tests/travis/setup_xdebug.sh; fi
   - ./Tests/travis/setup_broker.sh $BROKER
