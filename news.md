@@ -2,6 +2,8 @@
 
 * NEW: the bundle is now compatible with Symfony versions all the way up to 4.3
 
+* NEW: the bundle is now tested against ActiveMQ, Apollo, Artemis and RabbitMQ
+
 
 # Ver 0.2
 

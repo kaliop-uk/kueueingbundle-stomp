@@ -6,6 +6,8 @@
 #
 # Tailored for Ubuntu 16
 
+echo "Setting up broker: $1..."
+
 case "$1" in
 
 activemq)
@@ -45,3 +47,5 @@ rabbitmq)
     echo unknown broker: $1
     ;;
 esac
+
+echo "Setup: done"
