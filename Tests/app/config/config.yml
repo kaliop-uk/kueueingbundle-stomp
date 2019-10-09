@@ -8,8 +8,8 @@ kaliop_queueing_plugins_stomp:
         default:
             connect_string: "tcp://localhost:61613"
             credentials:
-                user: "admin"
-                password: "password"
+                user: "guest"
+                password: "guest"
 
     producers:
         travis_test_p:

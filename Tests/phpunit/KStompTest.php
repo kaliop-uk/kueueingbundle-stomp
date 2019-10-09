@@ -130,6 +130,7 @@ abstract class KStompTest extends WebTestCase
         switch($broker) {
             case 'apollo':
             case 'artemis':
+            case 'rabbitmq':
                 return '/topic/';
 
             case 'activemq':

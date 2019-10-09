@@ -75,7 +75,8 @@ class Stomp
      * Returns the full queue name to be used in stomp messages.
      * - Apache Apollo supports using routing keys at end of queue name @see https://activemq.apache.org/apollo/documentation/stomp-manual.html#Destination_Wildcards
      * - ActiveMQ: @see http://activemq.apache.org/wildcards.html
-     * - RabbitMQ... @see https://www.rabbitmq.com/stomp.html
+     * - RabbitMQ: @see https://www.rabbitmq.com/stomp.html
+     * - Artemis: @see https://activemq.apache.org/components/artemis/documentation/latest/stomp.html
      *
      * @param string $routingKey assumes the amqp pattern: *=1word, #=0-or-more
      * @return string;
@@ -104,7 +105,8 @@ class Stomp
      * @param bool $onlyOnce
      * @throws \FuseSource\Stomp\Exception\StompException
      */
-    protected function connect($onlyOnce = true) {
+    protected function connect($onlyOnce = true)
+    {
         if ($onlyOnce && $this->connected) {
             return;
         }
