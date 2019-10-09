@@ -14,11 +14,11 @@ class MessagesTest extends KStompTest
     {
         $queueName = $this->createQueue();
 
-        $consumer = $this->getConsumer($queueName, 'kaliop_queueing.message_consumer.noop');
+        $consumer = $this->getConsumer($queueName, 'test_alias.kaliop_queueing.message_consumer.noop');
         // warm up the topic by creating the durable subscription
         $consumer->consume(1, 1);
 
-        $msgProducer = $this->getMsgProducer($queueName, 'kaliop_queueing.message_producer.generic_message');
+        $msgProducer = $this->getMsgProducer($queueName, 'test_alias.kaliop_queueing.message_producer.generic_message');
         $msgProducer->publish('{"hello":"world"}');
 
         $consumer->consume(1, $this->timeout);
@@ -31,11 +31,11 @@ class MessagesTest extends KStompTest
     {
         $queueName = $this->createQueue();
 
-        $consumer = $this->getConsumer($queueName, 'kaliop_queueing.message_consumer.noop');
+        $consumer = $this->getConsumer($queueName, 'test_alias.kaliop_queueing.message_consumer.noop');
         // warm up the topic by creating the durable subscription
         $consumer->consume(1, 1);
 
-        $msgProducer = $this->getMsgProducer($queueName, 'kaliop_queueing.message_producer.generic_message');
+        $msgProducer = $this->getMsgProducer($queueName, 'test_alias.kaliop_queueing.message_producer.generic_message');
         $msgProducer->publish('{"hello":"world"}');
         $msgProducer->publish('{"bonjour":"monde"}');
         $msgProducer->publish('{"ciao":"mondo"}');
@@ -50,14 +50,14 @@ class MessagesTest extends KStompTest
     {
         $queueName = $this->createQueue(false);
         list ($cQueueName1, $cQueueName2) = $this->createConsumers($queueName, 2);
-        $c1 = $this->getConsumer($cQueueName1, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.world');
-        $c2 = $this->getConsumer($cQueueName2, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('bonjour.monde');
+        $c1 = $this->getConsumer($cQueueName1, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.world');
+        $c2 = $this->getConsumer($cQueueName2, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('bonjour.monde');
 
         // warm up the topic by creating the durable subscriptions
         $c1->consume(1, 1);
         $c2->consume(1, 1);
 
-        $msgProducer = $this->getMsgProducer($queueName, 'kaliop_queueing.message_producer.generic_message');
+        $msgProducer = $this->getMsgProducer($queueName, 'test_alias.kaliop_queueing.message_producer.generic_message');
         $msgProducer->publish('{"hello":"eng"}', null, 'hello.world');
         $msgProducer->publish('{"hello":"fre"}', null, 'bonjour.monde');
 
@@ -73,14 +73,14 @@ class MessagesTest extends KStompTest
     {
         $queueName = $this->createQueue(false);
         list ($cQueueName1, $cQueueName2) = $this->createConsumers($queueName, 2);
-        $c1 = $this->getConsumer($cQueueName1, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('*.world');
-        $c2 = $this->getConsumer($cQueueName2, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.*');
+        $c1 = $this->getConsumer($cQueueName1, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('*.world');
+        $c2 = $this->getConsumer($cQueueName2, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.*');
 
         // warm up the topic by creating the durable subscriptions
         $c1->consume(1, 1);
         $c2->consume(1, 1);
 
-        $msgProducer = $this->getMsgProducer($queueName, 'kaliop_queueing.message_producer.generic_message');
+        $msgProducer = $this->getMsgProducer($queueName, 'test_alias.kaliop_queueing.message_producer.generic_message');
         $msgProducer->publish('{"hello":"eng"}', null, 'hello.world');
         $msgProducer->publish('{"hello":"eng"}', null, 'hello.world');
         $msgProducer->publish('{"hello":"fre"}', null, 'bonjour.monde');
@@ -98,16 +98,16 @@ class MessagesTest extends KStompTest
     {
         $queueName = $this->createQueue(false);
         list ($cQueueName1, $cQueueName2, $cQueueName3) = $this->createConsumers($queueName, 3);
-        $c1 = $this->getConsumer($cQueueName1, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.#');
-        $c2 = $this->getConsumer($cQueueName2, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('#.world');
-        $c3 = $this->getConsumer($cQueueName3, 'kaliop_queueing.message_consumer.noop')->setRoutingkey('#');
+        $c1 = $this->getConsumer($cQueueName1, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('hello.#');
+        $c2 = $this->getConsumer($cQueueName2, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('#.world');
+        $c3 = $this->getConsumer($cQueueName3, 'test_alias.kaliop_queueing.message_consumer.noop')->setRoutingkey('#');
 
         // warm up the topic by creating the durable subscriptions
         $c1->consume(1, 1);
         $c2->consume(1, 1);
         $c3->consume(1, 1);
 
-        $msgProducer = $this->getMsgProducer($queueName, 'kaliop_queueing.message_producer.generic_message');
+        $msgProducer = $this->getMsgProducer($queueName, 'test_alias.kaliop_queueing.message_producer.generic_message');
         $msgProducer->publish('{"hello":"eng"}', null, 'hello.world');
         $msgProducer->publish('{"hello":"eng"}', null, 'hello.world');
         $msgProducer->publish('{"hello":"eng"}', null, 'hello.world');
