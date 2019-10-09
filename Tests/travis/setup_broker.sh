@@ -35,7 +35,7 @@ artemis)
     ;;
 
 rabbitmq)
-    sudo apt-get install -y rabbitmq
+    sudo apt-get install -y rabbitmq-server
     sudo cp ./Tests/travis/rabbitmq.conf /etc/rabbitmq/rabbitmq.conf
     sudo service rabbitmq-server restart
     sudo rabbitmq-plugins enable rabbitmq_stomp
