@@ -21,19 +21,21 @@ apollo)
     # NB: Apollo is 'dead' since march 2019...
     wget http://archive.apache.org/dist/activemq/activemq-apollo/1.7.1/apache-apollo-1.7.1-unix-distro.tar.gz
     tar -zxvf apache-apollo-1.7.1-unix-distro.tar.gz
-    cd apache-apollo-1.7.1
+    mv apache-apollo-1.7.1 apache-apollo
+    cd apache-apollo
     ./bin/apollo create testbroker
     echo -e "\nguest=guest" >> testbroker/etc/users.properties
     echo -e "\nusers=guest" >> testbroker/etc/groups.properties
-    ./testbroker/bin/apollo-broker run &
+    ./testbroker/bin/apollo-broker-service start
     ;;
 
 artemis)
     wget https://archive.apache.org/dist/activemq/activemq-artemis/2.10.1/apache-artemis-2.10.1-bin.tar.gz
     tar -zxvf apache-artemis-2.10.1-bin.tar.gz
-    cd apache-artemis-2.10.1
+    mv apache-artemis-2.10.1 apache-artemis
+    cd apache-artemis
     ./bin/artemis create test-broker --user=guest --password=guest --require-login
-    ./test-broker/bin/artemis run &
+    ./test-broker/bin/artemis-service start
     ;;
 
 rabbitmq)
