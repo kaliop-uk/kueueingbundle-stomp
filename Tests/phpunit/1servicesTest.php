@@ -11,6 +11,6 @@ class ServicesTest extends KStompTest
     {
         $container = $this->getContainer();
         $service = $container->get('kaliop_queueing.driver.stomp');
-        $service = $container->get('kaliop_queueing.stomp.queue_manager');
+        $service = $container->get('test_alias.kaliop_queueing.stomp.queue_manager');
     }
 }

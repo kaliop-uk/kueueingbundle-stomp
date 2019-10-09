@@ -12,6 +12,7 @@ services:
             - [ setQueueManager, [ '@kaliop_queueing.stomp.queue_manager' ] ]
         tags:
             - { name: kaliop_queueing.driver, alias: stomp }
+        public: true
 
     kaliop_queueing.stomp.queue_manager:
         class: '%kaliop_queueing.stomp.queue_manager.class%'
