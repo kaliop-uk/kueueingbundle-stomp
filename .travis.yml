@@ -4,15 +4,15 @@ matrix:
   include:
   # Test only on versions of Sf that are still supported. See: http://symfony.com/doc/current/contributing/community/releases.html#version-history
     - php: 5.6
-      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=apollo
+      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=artemis
     - php: 7.0
-      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=1 BROKER=apollo
+      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=1 BROKER=artemis
     - php: 7.1
-      env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=apollo
+      env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=artemis
     - php: 7.2
-      env: SYMFONY_VERSION=4.2.* CODE_COVERAGE=0 BROKER=apollo
+      env: SYMFONY_VERSION=4.2.* CODE_COVERAGE=0 BROKER=artemis
     - php: 7.3
-      env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=apollo
+      env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=artemis
     - php: 5.6
       env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=activemq
     - php: 7.0
@@ -35,7 +35,6 @@ matrix:
 before_install:
   # This is mandatory or 'apt-get install' calls following will fail
   - sudo apt-get update -qq
-  - sudo apt-get install rabbitmq-server activemq -y
   # Install a more recent Xdebug version, as the default one (2.2.7) crashes when generating code coverage
   #- if [ "$TRAVIS_PHP_VERSION" = "5.6" ]; then ./Tests/travis/setup_xdebug.sh; fi
   - ./Tests/travis/setup_broker.sh $BROKER

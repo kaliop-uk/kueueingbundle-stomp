@@ -129,6 +129,7 @@ abstract class KStompTest extends WebTestCase
         $broker = getenv('BROKER');
         switch($broker) {
             case 'apollo':
+            case 'artemis':
                 return '/topic/';
 
             case 'activemq':
