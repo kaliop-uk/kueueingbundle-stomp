@@ -48,4 +48,7 @@ rabbitmq)
     ;;
 esac
 
+# give some time to the brokers for starting up...
+sleep 5
+
 echo "Setup: done"
