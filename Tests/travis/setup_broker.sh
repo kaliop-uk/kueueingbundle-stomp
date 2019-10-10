@@ -18,7 +18,9 @@ activemq)
     ;;
 
 apollo)
-    # NB: Apollo is 'dead' since march 2019...
+    # NB: Apollo is 'dead' since march 2019... the lat available build is 1.7.1.
+    # It does not work on JRE 11, so we install version 8
+    sudo apt-get install -y openjdk-8-jdk-headless
     wget http://archive.apache.org/dist/activemq/activemq-apollo/1.7.1/apache-apollo-1.7.1-unix-distro.tar.gz
     tar -zxvf apache-apollo-1.7.1-unix-distro.tar.gz
     mv apache-apollo-1.7.1 apache-apollo
@@ -50,7 +52,7 @@ rabbitmq)
     ;;
 esac
 
-# give some time to the brokers for starting up...
+# give some time to the brokers for warming up...
 sleep 5
 
 echo "Setup: done"

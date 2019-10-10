@@ -56,6 +56,7 @@ after_failure:
   - 'if [ -d /var/log/rabbitmq ]; then cat /var/log/rabbitmq/*; fi'
   - 'if [ -d apache-apollo/testbroker/log ]; then cat apache-apollo/testbroker/log/*; fi'
   - 'if [ -d apache-artemis/test-broker/log ]; then cat apache-artemis/test-broker/log/*; fi'
+  - java -version
 
 after_script:
   # Upload code-coverage to Scrutinizer
