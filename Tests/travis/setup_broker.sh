@@ -31,7 +31,7 @@ apollo)
     # It does not work on JRE 11, so we install version 8
     sudo apt-get install -y openjdk-8-jdk-headless
     sudo  update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
-    echo -e "\nJAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
+    echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
     wget http://archive.apache.org/dist/activemq/activemq-apollo/1.7.1/apache-apollo-1.7.1-unix-distro.tar.gz
     tar -zxvf apache-apollo-1.7.1-unix-distro.tar.gz
     mv apache-apollo-1.7.1 apache-apollo
@@ -39,7 +39,7 @@ apollo)
     ./bin/apollo create testbroker
     echo -e "\nguest=guest" >> testbroker/etc/users.properties
     echo -e "\nusers=guest" >> testbroker/etc/groups.properties
-    ./testbroker/bin/apollo-broker-service start
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 ./testbroker/bin/apollo-broker-service start
     ;;
 
 artemis)

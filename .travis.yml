@@ -59,6 +59,7 @@ after_failure:
   - 'java -version'
   - 'which java'
   - 'echo "JAVA_HOME: $JAVA_HOME"'
+  - 'cat /etc/environment'
 
 after_script:
   # Upload code-coverage to Scrutinizer
