@@ -11,17 +11,20 @@ echo "Setting up broker: $1..."
 case "$1" in
 
 activemq)
-    # Ubuntu package
 
     # It does not work on JRE 11, so we install version 8
     sudo apt-get install -y openjdk-8-jdk-headless
     sudo  update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
     echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
 
+    # Ubuntu package
     sudo apt-get install -y activemq
     sudo cp ./Tests/travis/activemq.xml /etc/activemq/instances-available/main/activemq.xml
     sudo ln -s /etc/activemq/instances-available/main /etc/activemq/instances-enabled/
+    echo 'JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' | sudo tee -a /usr/share/activemq/activemq-options
     sudo service activemq restart
+    service activemq status
+
     # Alternative: latest version as tarball
     #wget https://archive.apache.org/dist/activemq/5.15.9/apache-activemq-5.15.9-bin.tar.gz
     #tar -zxvf apache-activemq-5.15.9-bin.tar.gz
