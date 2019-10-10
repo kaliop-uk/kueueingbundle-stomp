@@ -21,6 +21,7 @@ apollo)
     # NB: Apollo is 'dead' since march 2019... the lat available build is 1.7.1.
     # It does not work on JRE 11, so we install version 8
     sudo apt-get install -y openjdk-8-jdk-headless
+    sudo  update-java-alternatives --set java-1.8.0-openjdk-amd64
     wget http://archive.apache.org/dist/activemq/activemq-apollo/1.7.1/apache-apollo-1.7.1-unix-distro.tar.gz
     tar -zxvf apache-apollo-1.7.1-unix-distro.tar.gz
     mv apache-apollo-1.7.1 apache-apollo
