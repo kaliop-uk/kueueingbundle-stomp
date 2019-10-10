@@ -12,29 +12,32 @@ case "$1" in
 
 activemq)
 
-    # It does not seem to work on JRE 11 (xenial default, despite what the online docs say...), so we install version 8
-    # @todo check if jdk 8 is already installed and we can use a travis script to enable it...
-    sudo apt-get install -y openjdk-8-jdk-headless
-    sudo update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
-    echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
-
     # Ubuntu package
-    sudo apt-get install -y activemq
-    sudo cp ./Tests/travis/activemq.xml /etc/activemq/instances-available/main/activemq.xml
-    sudo ln -s /etc/activemq/instances-available/main /etc/activemq/instances-enabled/
-    echo 'JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' | sudo tee -a /usr/share/activemq/activemq-options
-    sudo service activemq restart
-    service activemq status
+    #
+    # It does not seem to work on JRE 11 (xenial default, despite what the online docs say...), so we install version 8
+    #sudo apt-get install -y openjdk-8-jdk-headless
+    #sudo update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
+    #echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
+    #
+    #sudo apt-get install -y activemq
+    #sudo cp ./Tests/travis/activemq.xml /etc/activemq/instances-available/main/activemq.xml
+    #sudo ln -s /etc/activemq/instances-available/main /etc/activemq/instances-enabled/
+    #echo 'JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' | sudo tee -a /usr/share/activemq/activemq-options
+    #sudo service activemq restart
+    #service activemq status
 
-    # Alternative: latest version as tarball
-    # Sadly it seems that the shell scripts provided are not really compatible with Ubuntu...
-    #wget https://archive.apache.org/dist/activemq/5.15.9/apache-activemq-5.15.9-bin.tar.gz
-    #tar -zxvf apache-activemq-5.15.9-bin.tar.gz
-    #mv apache-activemq-5.15.9 apache-activemq
-    #cd apache-activemq
-    # nb: the shell script coming oob seems broken on Ubuntu...
-    #./bin/activemq create testbroker
-    #./testbroker/bin/activemq start >/dev/null  2>&1 &
+    # Alternative: latest version from tarball
+    wget https://archive.apache.org/dist/activemq/5.15.9/apache-activemq-5.15.9-bin.tar.gz
+    tar -zxvf apache-activemq-5.15.9-bin.tar.gz
+    mv apache-activemq-5.15.9 apache-activemq
+    cd apache-activemq
+    #echo 'JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' | sudo tee -a /etc/default/activemq
+    # It seems that the shell scripts provided don't work well with Ubuntu, unless we force them
+    # to use a separate user by usage of sudo...
+    sudo ./bin/activemq create testbroker
+    sudo mkdir -p /var/lib/activemq/testbroker/data
+    sudo chmod -R o+w /var/lib/activemq/testbroker/data
+    sudo /var/lib/activemq/testbroker/bin/testbroker start >/dev/null 2>&1 &
     ;;
 
 apollo)

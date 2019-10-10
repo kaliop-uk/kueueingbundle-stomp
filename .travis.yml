@@ -52,16 +52,18 @@ script:
 after_failure:
   # Display as much info as we can to help developers
   - 'php -i'
-  - 'netstat -nlt | grep 61613'
   - 'if [ -d /var/log/rabbitmq ]; then cat /var/log/rabbitmq/*; fi'
   - 'if [ -d apache-apollo/testbroker/log ]; then cat apache-apollo/testbroker/log/*; fi'
   - 'if [ -d apache-artemis/test-broker/log ]; then cat apache-artemis/test-broker/log/*; fi'
+  - 'netstat -nlt | grep 61613'
   - 'java -version'
   - 'which java'
   - 'echo "JAVA_HOME: $JAVA_HOME"'
-  - 'cat /etc/environment'
-  - 'ls -la /usr/local/lib/jvm'
-  - 'ls -la /usr/lib/jvm'
+  #- 'cat /etc/environment'
+  #- 'ls -la /usr/local/lib/jvm'
+  #- 'ls -la /usr/lib/jvm'
+  - ls -ltr /var/log
+  - sudo cat /var/log/syslog
 
 after_script:
   # Upload code-coverage to Scrutinizer
