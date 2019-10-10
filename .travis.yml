@@ -4,15 +4,15 @@ matrix:
   include:
   # Test only on versions of Sf that are still supported. See: http://symfony.com/doc/current/contributing/community/releases.html#version-history
     - php: 5.6
-      env: SYMFONY_VERSION=2.7.* CODE_COVERAGE=0 BROKER=artemis
+      env: SYMFONY_VERSION=2.7.* BROKER=artemis CODE_COVERAGE=0
     - php: 7.0
-      env: SYMFONY_VERSION=2.8.* CODE_COVERAGE=1 BROKER=activemq
+      env: SYMFONY_VERSION=2.8.* BROKER=activemq CODE_COVERAGE=1
     - php: 7.1
-      env: SYMFONY_VERSION=3.4.* CODE_COVERAGE=0 BROKER=apollo
+      env: SYMFONY_VERSION=3.4.* BROKER=apollo CODE_COVERAGE=0
     - php: 7.2
-      env: SYMFONY_VERSION=4.2.* CODE_COVERAGE=0 BROKER=rabbitmq
+      env: SYMFONY_VERSION=4.2.* BROKER=rabbitmq CODE_COVERAGE=0
     - php: 7.3
-      env: SYMFONY_VERSION=4.3.* CODE_COVERAGE=0 BROKER=artemis
+      env: SYMFONY_VERSION=4.3.* BROKER=artemis CODE_COVERAGE=0
 
   #allow_failures:
     # Do the tests fail with activemq 5.13, which is the version currently available on Ubuntu 16?
