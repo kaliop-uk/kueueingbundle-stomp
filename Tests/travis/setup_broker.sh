@@ -21,7 +21,9 @@ activemq)
     #tar -zxvf apache-activemq-5.15.9-bin.tar.gz
     #mv apache-activemq-5.15.9 apache-activemq
     #cd apache-activemq
-    #bin/activemq start >/dev/null  2>&1 &
+    # nb: the shell script coming oob seems broken on Ubuntu...
+    #./bin/activemq create testbroker
+    #./testbroker/bin/activemq start >/dev/null  2>&1 &
     ;;
 
 apollo)
@@ -29,6 +31,7 @@ apollo)
     # It does not work on JRE 11, so we install version 8
     sudo apt-get install -y openjdk-8-jdk-headless
     sudo  update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
+    sudo echo -e "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /etc/environment
     wget http://archive.apache.org/dist/activemq/activemq-apollo/1.7.1/apache-apollo-1.7.1-unix-distro.tar.gz
     tar -zxvf apache-apollo-1.7.1-unix-distro.tar.gz
     mv apache-apollo-1.7.1 apache-apollo
