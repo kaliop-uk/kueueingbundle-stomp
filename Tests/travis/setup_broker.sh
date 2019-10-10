@@ -2,9 +2,9 @@
 
 # Sets up STOMP brokers
 # - listening on port 61613
-# - with a user account: admin/password
+# - with a user account: guest/guest
 #
-# Tailored for Ubuntu 16
+# Tailored for Ubuntu 16 (Xenial) with a default JDK 11 installed
 
 echo "Setting up broker: $1..."
 
@@ -35,13 +35,15 @@ activemq)
     # It seems that the shell scripts provided don't work well with Ubuntu, unless we force them
     # to use a separate user by usage of sudo...
     sudo ./bin/activemq create testbroker
-    sudo mkdir -p /var/lib/activemq/testbroker/data
-    sudo chmod -R o+w /var/lib/activemq/testbroker/data
-    sudo /var/lib/activemq/testbroker/bin/testbroker start >/dev/null 2>&1 &
+    sudo echo "guest=guest" >> testbroker/conf/users.properties
+    echo echo "users=guest" >> testbroker/conf/groups.properties
+    sudo mkdir -p testbroker/data
+    sudo chmod -R o+w testbroker/data
+    sudo ./testbroker/bin/testbroker start >testbroker/data/testbroker.log 2>&1 &
     ;;
 
 apollo)
-    # NB: Apollo is 'dead' since march 2019... the lat available build is 1.7.1.
+    # NB: Apollo is 'dead' since march 2019... the last available build is 1.7.1.
     # It does not work on JRE 11 (xenial default, despite what the online docs say...), so we install version 8
     sudo apt-get install -y openjdk-8-jdk-headless
     sudo update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
@@ -62,8 +64,8 @@ artemis)
     tar -zxvf apache-artemis-2.10.1-bin.tar.gz
     mv apache-artemis-2.10.1 apache-artemis
     cd apache-artemis
-    ./bin/artemis create test-broker --user=guest --password=guest --require-login
-    ./test-broker/bin/artemis-service start
+    ./bin/artemis create testbroker --user=guest --password=guest --require-login
+    ./testbroker/bin/artemis-service start
     ;;
 
 rabbitmq)
@@ -78,7 +80,7 @@ rabbitmq)
     ;;
 esac
 
-# give some time to the brokers for warming up...
+# Give some time to the brokers for warming up...
 sleep 5
 
 echo "Setup: done"
