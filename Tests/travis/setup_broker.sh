@@ -31,12 +31,11 @@ activemq)
     tar -zxvf apache-activemq-5.15.9-bin.tar.gz
     mv apache-activemq-5.15.9 apache-activemq
     cd apache-activemq
-    #echo 'JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64"' | sudo tee -a /etc/default/activemq
     # It seems that the shell scripts provided don't work well with Ubuntu, unless we force them
     # to use a separate user by usage of sudo...
     sudo ./bin/activemq create testbroker
-    sudo echo "guest=guest" >> testbroker/conf/users.properties
-    echo echo "users=guest" >> testbroker/conf/groups.properties
+    #echo "guest=guest" | sudo tee -a testbroker/conf/users.properties
+    #echo "users=guest" | sudo tee -a testbroker/conf/groups.properties
     sudo mkdir -p testbroker/data
     sudo chmod -R o+w testbroker/data
     sudo ./testbroker/bin/testbroker start >testbroker/data/testbroker.log 2>&1 &
