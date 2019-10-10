@@ -60,6 +60,8 @@ after_failure:
   - 'which java'
   - 'echo "JAVA_HOME: $JAVA_HOME"'
   - 'cat /etc/environment'
+  - 'ls -la /usr/local/lib/jvm'
+  - 'ls -la /usr/lib/jvm'
 
 after_script:
   # Upload code-coverage to Scrutinizer

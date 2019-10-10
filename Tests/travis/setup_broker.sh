@@ -12,9 +12,10 @@ case "$1" in
 
 activemq)
 
-    # It does not work on JRE 11, so we install version 8
+    # It does not seem to work on JRE 11 (xenial default, despite what the online docs say...), so we install version 8
+    # @todo check if jdk 8 is already installed and we can use a travis script to enable it...
     sudo apt-get install -y openjdk-8-jdk-headless
-    sudo  update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
+    sudo update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
     echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
 
     # Ubuntu package
@@ -26,6 +27,7 @@ activemq)
     service activemq status
 
     # Alternative: latest version as tarball
+    # Sadly it seems that the shell scripts provided are not really compatible with Ubuntu...
     #wget https://archive.apache.org/dist/activemq/5.15.9/apache-activemq-5.15.9-bin.tar.gz
     #tar -zxvf apache-activemq-5.15.9-bin.tar.gz
     #mv apache-activemq-5.15.9 apache-activemq
@@ -37,9 +39,9 @@ activemq)
 
 apollo)
     # NB: Apollo is 'dead' since march 2019... the lat available build is 1.7.1.
-    # It does not work on JRE 11, so we install version 8
+    # It does not work on JRE 11 (xenial default, despite what the online docs say...), so we install version 8
     sudo apt-get install -y openjdk-8-jdk-headless
-    sudo  update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
+    sudo update-java-alternatives -v --jre-headless --set java-1.8.0-openjdk-amd64
     echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" | sudo tee -a /etc/environment
 
     wget http://archive.apache.org/dist/activemq/activemq-apollo/1.7.1/apache-apollo-1.7.1-unix-distro.tar.gz
